@@ -1,18 +1,32 @@
-const express = require("express");
-const socketIo = require("socket.io");
-const http = require("http");
-const PORT = process.env.PORT || 5000;
+import express from "express";
+import http from "http";
+import cors from "cors";
+import dotenv from "dotenv";
+import { Server, Socket } from "socket.io";
+
+
+
+//config the appp 
 const app = express();
-const cors = require("cors");
+const PORT = process.env.PORT || 5000;
+const ORIGIN = process.env.ORIGIN;
+dotenv.config();
+cors();
 
 
+// create server 
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: { origin: "https://socketio-psi.vercel.app" },
+const io = new Server(server, {
+  cors: { origin: ORIGIN },
 });
+
+//test app 
 app.get("/", (req, res) => {
   res.json("Hello world ");
 });
+
+
+//concect app
 io.on("connection", (socket) => {
   const transport = socket.conn.transport.name; // in most cases, "polling"
 
