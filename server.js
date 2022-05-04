@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import { Server, Socket } from "socket.io";
 import dbConnect from "./db/dbConnect.js";
 import Message from "./db/schema/Message.js";
+import Singin from "./routes/auth/singin/singin.js";
+import SingUp from "./routes/auth/singup/singup.js";
 
 //config the appp
 const app = express();
@@ -18,9 +20,22 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: ORIGIN },
 });
-
 //concect app
-let docs;
+
+
+app.use(express.json());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+app.use("/api/user/singin", Singin);
+app.use("/api/user/singup", SingUp);
+
+
 app.get("/", (req, res) => {
   res.json("hey");
 });
@@ -36,7 +51,6 @@ io.on("connection", async (socket) => {
     await Message.create({ message: message }).then(async (doc) => {
       socket.broadcast.emit("messagesssssssssssssssssssssss", doc);
       socket.emit("messagesssssssssssssssssssssss", doc);
-      docs = doc;
     });
   });
   dbConnect();
