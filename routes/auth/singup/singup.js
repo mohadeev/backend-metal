@@ -6,7 +6,7 @@ import createuser from "./utils/createuser.js";
 router.post("/", async (req, res) => {
   createuser(req, res);
   //
-  //
+  ////
 });
 
 export default router;
