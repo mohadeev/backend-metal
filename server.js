@@ -7,6 +7,7 @@ import dbConnect from "./db/dbConnect.js";
 import Message from "./db/schema/Message.js";
 import Singin from "./routes/auth/singin/singin.js";
 import SingUp from "./routes/auth/singup/singup.js";
+import cookie from "cookie";
 
 //config the appp
 const app = express();
@@ -22,7 +23,6 @@ const io = new Server(server, {
 });
 //concect app
 
-
 app.use(express.json());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -35,7 +35,6 @@ app.use(function (req, res, next) {
 app.use("/api/user/singin", Singin);
 app.use("/api/user/singup", SingUp);
 
-
 app.get("/", (req, res) => {
   res.json("hey");
 });
@@ -44,18 +43,23 @@ io.on("connection", async (socket) => {
   socket.conn.on("upgrade", () => {
     const upgradedTransport = socket.conn.transport.name; // in most cases, "websocket"
   });
-  console.log("client connected: ", socket.id);
+  var cookief = socket.handshake.headers.cookie;
+  var cookies = cookie.parse(socket.handshake.headers.cookie || "");
+
+  console.log("client connected: ", cookies, socket.id);
   socket.on("send-message", async (message) => {
     dbConnect();
     console.log(message);
-    await Message.create({ message: message }).then(async (doc) => {
+    await Message.create({
+      message: message,
+      sender: cookies.user,
+    }).then(async (doc) => {
       socket.broadcast.emit("messagesssssssssssssssssssssss", doc);
       socket.emit("messagesssssssssssssssssssssss", doc);
     });
   });
   dbConnect();
   const data = await Message.find({});
-  console.log(data);
   socket.emit("send-all-messages", data);
 
   //   dbConnect();
