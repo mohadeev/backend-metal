@@ -6,18 +6,18 @@ import User from "../../../db/schema/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-
 router.post("/", async (req, res) => {
   const { password, email } = req.body;
   dbConnect();
   await User.findOne({ email: email }).then((docadded) => {
-    console.log(password, email )
+    console.log(password, email);
     if (docadded) {
       bcrypt.compare(password, docadded.password).then((result) => {
         if (result) {
           const id = docadded._id.toString("hex");
+          const username = docadded.username;
           let auth = true;
-          let userdata = { email, auth, id };
+          let userdata = { email, auth, id,  username  };
           const user = { user: docadded.id };
           const accesTokken = jwt.sign(user, process.env.ACCCES_TOKKEN_SECRET);
           res.json({

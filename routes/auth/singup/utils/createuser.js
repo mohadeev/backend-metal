@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 const createuser = async (req, res) => {
   dbConnect();
   //cheking password is not spam
-  const { email, password, conifrmpassword } = req.body;
+  const { email, password, conifrmpassword, username } = req.body;
   if (
     !email.includes("@") ||
     email.length <= 0 ||
@@ -38,11 +38,11 @@ const createuser = async (req, res) => {
         const CreateUser = async () => {
           const salt = await bcrypt.genSalt();
           const hashPassword = await bcrypt.hash(password, salt);
-          User.create({ email: email, password: hashPassword }).then(
+          User.create({ email: email, password: hashPassword, username }).then(
             (docadded) => {
               const id = docadded._id.toString("hex");
               let auth = true;
-              let userdata = { email, auth, id };
+              let userdata = { email, auth, id, username };
               const user = { user: id };
               const accesTokken = jwt.sign(
                 user,
