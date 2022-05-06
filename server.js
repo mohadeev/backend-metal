@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 const ORIGIN = process.env.ORIGIN;
 dotenv.config();
 cors(
-  { "Access-Control-Allow-Origin": `${ORIGIN}` },
+  { "Access-Control-Allow-Origin": `*` },
   "Access-Control-Allow-Methods: POST, PUT, PATCH, GET, DELETE, OPTIONS",
   "Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization"
 );
@@ -31,7 +31,7 @@ const io = new Server(server, {
 app.use(express.json());
 
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", `${ORIGIN}`);
+  res.setHeader("Access-Control-Allow-Origin", `*`);
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS,  PUT,PATCH, DELETE"
@@ -55,11 +55,11 @@ app.get("/", (req, res) => {
 
 io.use((socket, next) => {
   let cookies = socket.handshake.query.token;
-  console.log(cookies, "sdffdfdf hahahah");
   if (cookies) {
-    // console.log(socket.handshake.headers.cookie);
-    var cookief = socket.handshake.headers.cookie;
-    // var cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    // var cookief = socket.handshake.headers.cookie;
+    // var cookiesss = JSON.parse(socket.handshake.query);
+    // cookie.parse(socket.handshake.query || "");
+    console.log(cookies);
     jwt.verify(
       cookies,
       process.env.ACCCES_TOKKEN_SECRET,
@@ -68,7 +68,7 @@ io.use((socket, next) => {
           console.log("error verfy");
           return next(new Error("Authentication error"));
         } else {
-          // console.log(decoded);
+          console.log(decoded);
           socket.decoded = decoded;
           next();
         }
