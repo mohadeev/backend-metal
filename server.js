@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
   res.json({ message: "hey" });
 });
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   let cookies = socket.handshake.query.token;
   const dataObj = { name: cookies };
   if (cookies) {
@@ -61,21 +61,24 @@ io.use((socket, next) => {
     // var cookiesss = JSON.parse(cookiesss || "");
     // cookie.parse(socket.handshake.query || "");
     // console.log(cookiesss);
-    console.log(dataObj);
-    jwt.verify(
-      dataObj.name,
-      process.env.ACCCES_TOKKEN_SECRET,
-      function (err, decoded) {
-        if (err) {
-          console.log("error verfy");
-          return next(new Error("Authentication error"));
-        } else {
-          console.log(decoded);
-          socket.decoded = decoded;
-          next();
+    console.log(dataObj, process.env.ACCCES_TOKKEN_SECRET, dataObj.name);
+    const dataAwait = async () => {
+      await jwt.verify(
+        dataObj.name,
+        process.env.ACCCES_TOKKEN_SECRET,
+        function (err, decoded) {
+          if (err) {
+            console.log("error verfy");
+            return next(new Error("Authentication error"));
+          } else {
+            console.log(decoded);
+            socket.decoded = decoded;
+            next();
+          }
         }
-      }
-    );
+      );
+    };
+    dataAwait();
   } else {
     console.log("error11");
     next(new Error("Authentication error"));
