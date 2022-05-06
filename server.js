@@ -46,19 +46,7 @@ app.use(function (req, res, next) {
 app.use("/api/user/singin", Singin);
 app.use("/api/user/singup", SingUp);
 
-const AuthToken = (req, res, next) => {
-  const accesToken = req.headers.a_custom_header;
-  jwt.verify(
-    accesToken,
-    process.env.ACCCES_TOKKEN_SECRET,
-    function (err, decoded) {
-      req.user = decoded.user;
-      console.log(decoded);
-    }
-  );
-  next();
-};
-app.get("/", AuthToken, (req, res) => {
+app.get("/", (req, res) => {
   // const accesToken = req.headers.a_custom_header;
   // console.log(accesToken);
   console.log(req.user);
