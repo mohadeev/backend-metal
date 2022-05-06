@@ -54,6 +54,7 @@ app.get("/", (req, res) => {
 });
 
 io.use((socket, next) => {
+  console.log(socket.handshake.headers.cookie);
     if (socket.handshake.headers.cookie) {
       // console.log(socket.handshake.headers.cookie);
       var cookief = socket.handshake.headers.cookie;
@@ -66,7 +67,7 @@ io.use((socket, next) => {
             console.log("error verfy");
             return next(new Error("Authentication error"));
           } else {
-            console.log(decoded);
+            // console.log(decoded);
             socket.decoded = decoded;
             next();
           }
