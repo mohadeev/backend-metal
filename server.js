@@ -55,13 +55,15 @@ app.get("/", (req, res) => {
 
 io.use((socket, next) => {
   let cookies = socket.handshake.query.token;
+  const dataObj = { name: cookies };
   if (cookies) {
-    // var cookief = socket.handshake.headers.cookie;
-    // var cookiesss = JSON.parse(socket.handshake.query);
+    const cookief = cookies;
+    // var cookiesss = JSON.parse(cookiesss || "");
     // cookie.parse(socket.handshake.query || "");
-    console.log(cookies);
+    // console.log(cookiesss);
+    console.log(dataObj);
     jwt.verify(
-      cookies,
+      dataObj.name,
       process.env.ACCCES_TOKKEN_SECRET,
       function (err, decoded) {
         if (err) {
