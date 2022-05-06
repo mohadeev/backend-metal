@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
           res.json({
             message: "you successfully log in",
             user: userdata,
-            accesTokken: accesTokken,
+            accesToken: accesTokken,
           });
         } else {
           res.json({

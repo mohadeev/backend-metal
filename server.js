@@ -8,13 +8,18 @@ import Message from "./db/schema/Message.js";
 import Singin from "./routes/auth/singin/singin.js";
 import SingUp from "./routes/auth/singup/singup.js";
 import cookie from "cookie";
-
+import jwt from "jsonwebtoken";
+import SocketMessage from "./routes/auth/socket/index.js";
 //config the appp
 const app = express();
 const PORT = process.env.PORT || 5000;
 const ORIGIN = process.env.ORIGIN;
 dotenv.config();
-cors();
+cors(
+  { "Access-Control-Allow-Origin": process.env.ORIGIN },
+  "Access-Control-Allow-Methods: POST, PUT, PATCH, GET, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization"
+);
 
 // create server
 const server = http.createServer(app);
@@ -24,49 +29,73 @@ const io = new Server(server, {
 //concect app
 
 app.use(express.json());
+
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+  res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN);
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS,  PUT,PATCH, DELETE"
   );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type,a_custom_header"
+  ); //notice here carefully
+  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 app.use("/api/user/singin", Singin);
 app.use("/api/user/singup", SingUp);
 
-app.get("/", (req, res) => {
-  res.json("hey");
+const AuthToken = (req, res, next) => {
+  const accesToken = req.headers.a_custom_header;
+  jwt.verify(
+    accesToken,
+    process.env.ACCCES_TOKKEN_SECRET,
+    function (err, decoded) {
+      req.user = decoded.user;
+      console.log(decoded);
+    }
+  );
+  next();
+};
+app.get("/", AuthToken, (req, res) => {
+  // const accesToken = req.headers.a_custom_header;
+  // console.log(accesToken);
+  console.log(req.user);
+  res.json({ message: "hey" });
 });
-io.on("connection", async (socket) => {
-  const transport = socket.conn.transport.name; // in most cases, "polling"
+
+io.use(function (socket, next) {
+  if (socket.handshake.headers.cookie) {
+    // console.log(socket.handshake.headers.cookie);
+    var cookief = socket.handshake.headers.cookie;
+    var cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    jwt.verify(
+      cookies.token,
+      process.env.ACCCES_TOKKEN_SECRET,
+      function (err, decoded) {
+        if (err) {
+          console.log("error verfy");
+          return next(new Error("Authentication error"));
+        } else {
+          console.log(decoded);
+          socket.decoded = decoded;
+          next();
+        }
+      }
+    );
+  } else {
+    console.log("error11");
+    next(new Error("Authentication error"));
+  }
+}).on("connection", async (socket) => {
+  const transport = socket.conn.transport.name;
   socket.conn.on("upgrade", () => {
-    const upgradedTransport = socket.conn.transport.name; // in most cases, "websocket"
+    const upgradedTransport = socket.conn.transport.name;
   });
   var cookief = socket.handshake.headers.cookie;
   var cookies = cookie.parse(socket.handshake.headers.cookie || "");
-
-  console.log("client connected: ", cookies, socket.id);
-  socket.on("send-message", async (message) => {
-    dbConnect();
-    console.log(message);
-    await Message.create({
-      message: message,
-      sender: cookies.user,
-    }).then(async (doc) => {
-      socket.broadcast.emit("messagesssssssssssssssssssssss", doc);
-      socket.emit("messagesssssssssssssssssssssss", doc);
-    });
-  });
-  dbConnect();
-  const data = await Message.find({});
-  socket.emit("send-all-messages", data);
-
-  //   dbConnect();
-  //   docs = await Message.find();
-  //   socket.broadcast.emit("messagesssssssssssssssssssssss", docs);
-  //   socket.emit("messagesssssssssssssssssssssss", docs);
-  //   console.log("message:", docs);
+  SocketMessage(socket);
 });
 
 server.listen(PORT, (err) => {

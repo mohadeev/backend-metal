@@ -51,7 +51,7 @@ const createuser = async (req, res) => {
               res.json({
                 message: "user created successfully",
                 user: userdata,
-                accesTokken: accesTokken,
+                accesToken: accesTokken,
               });
             }
           );
