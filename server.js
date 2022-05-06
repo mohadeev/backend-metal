@@ -53,31 +53,31 @@ app.get("/", (req, res) => {
   res.json({ message: "hey" });
 });
 
-// io.use(function (socket, next) {
-//   if (socket.handshake.headers.cookie) {
-//     // console.log(socket.handshake.headers.cookie);
-//     var cookief = socket.handshake.headers.cookie;
-//     var cookies = cookie.parse(socket.handshake.headers.cookie || "");
-//     jwt.verify(
-//       cookies.token,
-//       process.env.ACCCES_TOKKEN_SECRET,
-//       function (err, decoded) {
-//         if (err) {
-//           console.log("error verfy");
-//           return next(new Error("Authentication error"));
-//         } else {
-//           console.log(decoded);
-//           socket.decoded = decoded;
-//           next();
-//         }
-//       }
-//     );
-//   } else {
-//     console.log("error11");
-//     next(new Error("Authentication error"));
-//   }
-// })
-io.on("connection", async (socket) => {
+io.use( (socket, next) =>{
+  if (socket.handshake.headers.cookie) {
+    // console.log(socket.handshake.headers.cookie);
+    var cookief = socket.handshake.headers.cookie;
+    var cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    jwt.verify(
+      cookies.token,
+      process.env.ACCCES_TOKKEN_SECRET,
+      function (err, decoded) {
+        if (err) {
+          console.log("error verfy");
+          return next(new Error("Authentication error"));
+        } else {
+          console.log(decoded);
+          socket.decoded = decoded;
+          next();
+        }
+      }
+    );
+  } else {
+    console.log("error11");
+    next(new Error("Authentication error"));
+  }
+})
+.on("connection", async (socket) => {
   const transport = socket.conn.transport.name;
   socket.conn.on("upgrade", () => {
     const upgradedTransport = socket.conn.transport.name;
