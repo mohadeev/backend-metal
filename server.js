@@ -54,8 +54,9 @@ app.get("/", (req, res) => {
 });
 
 io.use((socket, next) => {
-  let cookies = socket.handshake.query.token
-  if (socket.handshake.headers.cookie) {
+  let cookies = socket.handshake.query.token;
+  console.log(cookies, "sdffdfdf hahahah");
+  if (cookies) {
     // console.log(socket.handshake.headers.cookie);
     var cookief = socket.handshake.headers.cookie;
     // var cookies = cookie.parse(socket.handshake.headers.cookie || "");
