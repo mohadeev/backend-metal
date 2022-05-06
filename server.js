@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 const ORIGIN = process.env.ORIGIN;
 dotenv.config();
 cors(
-  { "Access-Control-Allow-Origin": "*" },
+  { "Access-Control-Allow-Origin": `${ORIGIN}` },
   "Access-Control-Allow-Methods: POST, PUT, PATCH, GET, DELETE, OPTIONS",
   "Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization"
 );
@@ -31,7 +31,7 @@ const io = new Server(server, {
 app.use(express.json());
 
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", `${ORIGIN}`);
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS,  PUT,PATCH, DELETE"
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
   console.log(req.user);
   res.json({ message: "hey" });
 });
-
+io.set("origins", `${ORIGIN} :*`);
 io.use( (socket, next) =>{
   if (socket.handshake.headers.cookie) {
     // console.log(socket.handshake.headers.cookie);
