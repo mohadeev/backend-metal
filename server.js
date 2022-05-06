@@ -54,39 +54,38 @@ app.get("/", (req, res) => {
 });
 
 io.use((socket, next) => {
-  console.log(socket.handshake.headers.cookie);
-    if (socket.handshake.headers.cookie) {
-      // console.log(socket.handshake.headers.cookie);
-      var cookief = socket.handshake.headers.cookie;
-      var cookies = cookie.parse(socket.handshake.headers.cookie || "");
-      jwt.verify(
-        cookies.token,
-        process.env.ACCCES_TOKKEN_SECRET,
-        function (err, decoded) {
-          if (err) {
-            console.log("error verfy");
-            return next(new Error("Authentication error"));
-          } else {
-            // console.log(decoded);
-            socket.decoded = decoded;
-            next();
-          }
-        }
-      );
-    } else {
-      console.log("error11");
-      next(new Error("Authentication error"));
-    }
-  })
-  .on("connection", async (socket) => {
-    const transport = socket.conn.transport.name;
-    socket.conn.on("upgrade", () => {
-      const upgradedTransport = socket.conn.transport.name;
-    });
+  let cookies = socket.handshake.query.token
+  if (socket.handshake.headers.cookie) {
+    // console.log(socket.handshake.headers.cookie);
     var cookief = socket.handshake.headers.cookie;
-    var cookies = cookie.parse(socket.handshake.headers.cookie || "");
-    SocketMessage(socket);
+    // var cookies = cookie.parse(socket.handshake.headers.cookie || "");
+    jwt.verify(
+      cookies,
+      process.env.ACCCES_TOKKEN_SECRET,
+      function (err, decoded) {
+        if (err) {
+          console.log("error verfy");
+          return next(new Error("Authentication error"));
+        } else {
+          // console.log(decoded);
+          socket.decoded = decoded;
+          next();
+        }
+      }
+    );
+  } else {
+    console.log("error11");
+    next(new Error("Authentication error"));
+  }
+}).on("connection", async (socket) => {
+  const transport = socket.conn.transport.name;
+  socket.conn.on("upgrade", () => {
+    const upgradedTransport = socket.conn.transport.name;
   });
+  var cookief = socket.handshake.headers.cookie;
+  var cookies = cookie.parse(socket.handshake.headers.cookie || "");
+  SocketMessage(socket);
+});
 
 server.listen(PORT, (err) => {
   if (err) console.log(err);
