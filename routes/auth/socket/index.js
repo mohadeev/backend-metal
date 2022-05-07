@@ -9,9 +9,8 @@ const SocketSend = async (socket) => {
   // console.log("client connected: ", cookies, socket.id);
   SocketGetSenderRooms(socket);
   socket.on("send-message", async (messagedata) => {
+    console.log(messagedata);
     dbConnect();
-    // console.log(message);
-    const messsage = { message: messagedata, sender: cookiesUser }; 
     await Message.create({
       message: messagedata,
       sender: cookiesUser,
@@ -23,8 +22,9 @@ const SocketSend = async (socket) => {
     });
   });
   dbConnect();
-  const data = await Message.find({});
-  socket.emit("send-all-messages", data);
+  await Message.find({}).then((data) => {
+    socket.emit("send-all-messages", data);
+  });
 };
 
 export default SocketSend;

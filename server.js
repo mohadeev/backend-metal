@@ -24,10 +24,7 @@ cors(
 );
 
 // create server
-const server = http.createServer(app, {
-  pingTimeout: 30000,
-  pingInterval: 10000,
-});
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: ORIGIN },
 });
@@ -65,13 +62,12 @@ io.use(async (socket, next) => {
   let cookiesUser = socket.handshake.query.user;
 
   const dataObj = { name: cookies };
-
   if (cookies && cookiesUser) {
     const cookief = cookies;
     // var cookiesss = JSON.parse(cookiesss || "");
     // cookie.parse(socket.handshake.query || "");
     // console.log(cookiesss);
-    console.log(socket.handshake.query);
+    // console.log(socket.handshake.query);
     jwt.verify(
       dataObj.name,
       process.env.ACCCES_TOKKEN_SECRET,

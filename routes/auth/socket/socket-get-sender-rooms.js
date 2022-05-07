@@ -7,6 +7,13 @@ export const SocketGetSenderRooms = async (socket) => {
   dbConnect();
   await User.findOne({ _d: cookiesUser }).then((document) => {
     if (document) {
+      const sendrs = document.senders;
+      sendrs.map((items) => {
+        Message.findOne({ _d: items }).then((senders) => {
+          console.log(senders);;
+        });
+      });
+      socket.emit("send-senders-and-messages");
       // console.log(document);
     } else {
       console.log("nono");
