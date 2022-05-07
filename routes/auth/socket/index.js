@@ -8,13 +8,16 @@ const SocketSend = async (socket) => {
   let cookiesUser = socket.handshake.query.user;
   // console.log("client connected: ", cookies, socket.id);
   SocketGetSenderRooms(socket);
-  socket.on("send-message", async (message) => {
+  socket.on("send-message", async (messagedata) => {
     dbConnect();
     // console.log(message);
+    const messsage = { message: messagedata, sender: cookiesUser }; 
     await Message.create({
-      message: message,
+      message: messagedata,
       sender: cookiesUser,
     }).then(async (doc) => {
+      const data = await Message.find({});
+      socket.emit("send-all-messages", data);
       socket.broadcast.emit("messagesssssssssssssssssssssss", doc);
       socket.emit("messagesssssssssssssssssssssss", doc);
     });
