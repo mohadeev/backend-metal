@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import { Server, Socket } from "socket.io";
 import dbConnect from "./db/dbConnect.js";
 import Message from "./db/schema/Message.js";
+import User from "./db/schema/user.js";
+
 import Singin from "./routes/auth/singin/singin.js";
 import SingUp from "./routes/auth/singup/singup.js";
 import cookie from "cookie";
@@ -46,11 +48,13 @@ app.use(function (req, res, next) {
 app.use("/api/user/singin", Singin);
 app.use("/api/user/singup", SingUp);
 
-app.get("/", (req, res) => {
-  // const accesToken = req.headers.a_custom_header;
-  // console.log(accesToken);
-  console.log(req.user);
-  res.json({ message: "hey" });
+app.get("/", async (req, res) => {
+  dbConnect();
+  const users = await User.find({});
+  let username = users.map((itmes) => itmes.username).toString();
+  let id = users.map((itmes) => itmes._id).toString("hex");
+  let image = users.map((itmes) => itmes.image).toString();
+  res.json([{ username: username, id: id, image: image }]);
 });
 
 io.use(async (socket, next) => {
@@ -59,7 +63,7 @@ io.use(async (socket, next) => {
 
   const dataObj = { name: cookies };
 
-  if (cookies && cookiesUser ) {
+  if (cookies && cookiesUser) {
     const cookief = cookies;
     // var cookiesss = JSON.parse(cookiesss || "");
     // cookie.parse(socket.handshake.query || "");

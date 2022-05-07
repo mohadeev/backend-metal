@@ -14,6 +14,7 @@ const UserScheme = mongoose.Schema(
       type: String,
       required: true,
     },
+    senders: { type: [] },
     date: {
       type: Date,
       default: Date.now(),
