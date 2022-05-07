@@ -55,13 +55,16 @@ app.get("/", (req, res) => {
 
 io.use(async (socket, next) => {
   let cookies = socket.handshake.query.token;
+  let cookiesUser = socket.handshake.query.user;
+
   const dataObj = { name: cookies };
-  if (cookies) {
+
+  if (cookies && cookiesUser ) {
     const cookief = cookies;
     // var cookiesss = JSON.parse(cookiesss || "");
     // cookie.parse(socket.handshake.query || "");
     // console.log(cookiesss);
-    console.log(dataObj, process.env.ACCCES_TOKKEN_SECRET, dataObj.name);
+    console.log(socket.handshake.query);
     const dataAwait = async () => {
       await jwt.verify(
         dataObj.name,
