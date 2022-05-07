@@ -68,7 +68,7 @@ io.use(async (socket, next) => {
     // var cookiesss = JSON.parse(cookiesss || "");
     // cookie.parse(socket.handshake.query || "");
     // console.log(cookiesss);
-    console.log(socket.handshake.query);
+    // console.log(socket.handshake.query);
     jwt.verify(
       dataObj.name,
       process.env.ACCCES_TOKKEN_SECRET,
@@ -79,7 +79,6 @@ io.use(async (socket, next) => {
         } else {
           socket.decoded = decoded;
           socket.user = decoded.user;
-          console.log(decoded.user);
           next();
         }
       }
@@ -93,8 +92,6 @@ io.use(async (socket, next) => {
   socket.conn.on("upgrade", () => {
     const upgradedTransport = socket.conn.transport.name;
   });
-  var cookief = socket.handshake.headers.cookie;
-  var cookies = cookie.parse(socket.handshake.headers.cookie || "");
   SocketMessage(socket);
 });
 
