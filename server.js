@@ -69,23 +69,21 @@ io.use(async (socket, next) => {
     // cookie.parse(socket.handshake.query || "");
     // console.log(cookiesss);
     console.log(socket.handshake.query);
-    const dataAwait = async () => {
-      await jwt.verify(
-        dataObj.name,
-        process.env.ACCCES_TOKKEN_SECRET,
-        function (err, decoded) {
-          if (err) {
-            console.log("error verfy");
-            return next(new Error("Authentication error"));
-          } else {
-            console.log(decoded);
-            socket.decoded = decoded;
-            next();
-          }
+    jwt.verify(
+      dataObj.name,
+      process.env.ACCCES_TOKKEN_SECRET,
+      function (err, decoded) {
+        if (err) {
+          console.log("error verfy");
+          return next(new Error("Authentication error"));
+        } else {
+          socket.decoded = decoded;
+          socket.user = decoded.user;
+          console.log(decoded.user);
+          next();
         }
-      );
-    };
-    dataAwait();
+      }
+    );
   } else {
     console.log("error11");
     next(new Error("Authentication error"));
