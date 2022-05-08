@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const MessageSchema = mongoose.Schema(
   {
+    conversationId: String,
     message: {
       type: String,
       required: true,

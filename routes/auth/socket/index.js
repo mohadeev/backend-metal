@@ -22,9 +22,9 @@ const SocketSend = async (socket) => {
     });
   });
   dbConnect();
-  await Message.find({}).then((data) => {
-    socket.emit("send-all-messages", data);
-  });
+  const dataMessages = await Message.find({});
+
+  socket.emit("send-all-messages", dataMessages);
 };
 
 export default SocketSend;
