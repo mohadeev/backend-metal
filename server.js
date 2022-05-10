@@ -33,7 +33,7 @@ dbConnect();
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:3000" },
+  cors: { origin: ORIGIN },
 });
 //concect app
 
@@ -117,7 +117,7 @@ const RemoveUser = (IdDescnected) => {
 };
 
 io.on("connection", (socket) => {
-  // console.log("connected ", socket.id);
+  console.log("connected ", socket.id);
   socket.on("get-id", (bdid) => {
     if (bdid !== null) {
       IdFromClient = bdid;
@@ -130,9 +130,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-messageto-user", (data) => {
+    console.log(data);
     io.to(data.conversationId).emit("get-message", data);
     socket.to(data.conversationId).emit("get-message", data);
-    console.log(data.conversationId);
+    socket.broadcast.emit("get-message", data);
+    // console.log(data.conversationId);
   });
   // SocketMessage(socket, AllUsers, io);
   socket.on("disconnect", () => {
