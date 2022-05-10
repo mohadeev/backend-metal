@@ -12,6 +12,9 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import SocketMessage from "./routes/auth/socket/index.js";
 import createmessages from "./routes/messages/createmessage.js";
+import conversations from "./routes/conversations/conversations.js";
+import senduser from "./routes/senduser.js";
+
 //config the appp
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,7 +33,7 @@ dbConnect();
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: ORIGIN },
+  cors: { origin: "http://localhost:3000" },
 });
 //concect app
 
@@ -53,6 +56,8 @@ app.use(function (req, res, next) {
 app.use("/api/user/singin", Singin);
 app.use("/api/user/singup", SingUp);
 app.use("/api/livechat/sendmessage", createmessages);
+app.use("/api/user/conversations", conversations);
+app.use("/api/user/senduser", senduser);
 
 app.get("/", async (req, res) => {
   dbConnect();
@@ -93,19 +98,48 @@ app.get("/", async (req, res) => {
 //     next(new Error("Authentication error"));
 //   }
 // })
-const AllUsers = [];
-io.on("connection", async (socket) => {
-  const transport = socket.conn.transport.name;
-  socket.conn.on("upgrade", () => {
-    const upgradedTransport = socket.conn.transport.name;
+let AllUsers = [];
+var IdFromClient = "";
+
+const AddUser = (UserId, SocketId) => {
+  if (UserId !== "") {
+    const result = AllUsers.find((obj) => {
+      return obj.userid === UserId;
+    });
+    AllUsers.push({ userid: UserId, socketid: SocketId });
+  }
+};
+
+const RemoveUser = (IdDescnected) => {
+  const objIndex = AllUsers.findIndex((obj) => obj.socketid === IdDescnected);
+  AllUsers.splice(objIndex, 1);
+  console.log("user removed", IdDescnected);
+};
+
+io.on("connection", (socket) => {
+  // console.log("connected ", socket.id);
+  socket.on("get-id", (bdid) => {
+    if (bdid !== null) {
+      IdFromClient = bdid;
+    }
   });
-  console.log("id : ", socket.id);
-  SocketMessage(socket);
+  AddUser(IdFromClient, socket.id);
+  socket.on("create", (room) => {
+    socket.join(room);
+    console.log(room, "user log in ");
+  });
+
+  socket.on("send-messageto-user", (data) => {
+    io.to(data.conversationId).emit("get-message", data);
+    socket.to(data.conversationId).emit("get-message", data);
+    console.log(data.conversationId);
+  });
+  // SocketMessage(socket, AllUsers, io);
   socket.on("disconnect", () => {
-    console.log("desconet id : ", socket);
-    // SocketMessage(socket);
+    // console.log("desconected", socket.id);
+    // RemoveUser(socket.id);
   });
-  });
+});
 
 server.listen(PORT, (err) => {
   if (err) console.log(err);

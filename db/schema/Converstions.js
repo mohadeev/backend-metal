@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const MessageSchema = mongoose.Schema(
+const ConverstionSchema = mongoose.Schema(
   {
-    members : { type: Array}
+    members: { type: Array },
   },
   { timestamps: true }
 );
 
-const Message = mongoose.model("message", MessageSchema);
-export default Message;
+const Converstion = mongoose.model("converstion", ConverstionSchema);
+export default Converstion;

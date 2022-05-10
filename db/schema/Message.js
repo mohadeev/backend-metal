@@ -12,6 +12,7 @@ const MessageSchema = mongoose.Schema(
       type: String,
     },
     unread: { Boolean, default: false },
+    
     to: {
       type: String,
     },

@@ -1,30 +1,46 @@
 import { Server, Socket } from "socket.io";
 import Message from "../../../db/schema/Message.js";
+import Converstion from "../../../db/schema/Converstions.js";
 import dbConnect from "../../../db/dbConnect.js";
 import cookie from "cookie";
-import { SocketGetSenderRooms } from "./socket-get-sender-rooms.js";
 
-const SocketSend = async (socket) => {
-  let cookiesUser = socket.handshake.query.user;
-  // console.log("client connected: ", cookies, socket.id);
-  SocketGetSenderRooms(socket);
-  socket.on("send-message", async (messagedata) => {
-    console.log(messagedata);
-    dbConnect();
-    await Message.create({
-      message: messagedata,
-      sender: cookiesUser,
-    }).then(async (doc) => {
-      const data = await Message.find({});
-      socket.emit("send-all-messages", data);
-      socket.broadcast.emit("messagesssssssssssssssssssssss", doc);
-      socket.emit("messagesssssssssssssssssssssss", doc);
+const SocketSend = (socket, AllUsers, io) => {
+  socket.on("send-messageto-user", async (messagedata) => {
+    const { sender, message, conversationId } = messagedata;
+    const ConverId = await Converstion.findOne({ _id: conversationId });
+
+    console.log(AllUsers);
+    let RevieverArray = ConverId.members
+      .filter((User) => User !== sender)
+      .toString();
+    let SenderArray = ConverId.members
+      .filter((User) => User === sender)
+      .toString();
+
+    const ReciverSocketId = AllUsers.filter(
+      (sender) => sender.userid === RevieverArray
+    );
+    const SenderSocketId = AllUsers.filter(
+      (sender) => sender.userid === SenderArray
+    );
+    SenderSocketId.map((item) => {
+      console.log("message sent to sender" + item.socketid);
+      socket.to(item.socketid).emit("get-the-live-message-local", {
+        sender,
+        message,
+      });
     });
-  });
-  dbConnect();
-  const dataMessages = await Message.find({});
 
-  socket.emit("send-all-messages", dataMessages);
+    if (typeof ReciverSocketId !== "undefined") {
+      ReciverSocketId.map((item) => {
+        console.log("message sent to oreciever" + item.socketid);
+        socket.to(item.socketid).emit("get-the-live-message-local", {
+          sender,
+          message,
+        });
+      });
+    }
+  });
 };
 
 export default SocketSend;
