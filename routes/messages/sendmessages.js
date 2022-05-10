@@ -13,21 +13,22 @@ const sendmessages = async (req, res) => {
   } else if (
     mongoose.Types.ObjectId.isValid(convId) &&
     convId.length >= 12 &&
-    convId.length <= 24
+    convId.length <= 24 &&
+    typeof UserId !== "undefined"
   ) {
-    const Coversion = await Converstion.findOne({ _id: convId });
-    if (
-      Coversion.members.includes(req.headers.a_custom_header) &&
-      typeof UserId !== "undefined"
-    ) {
-      try {
-        const data = await Message.find({ conversationId: convId });
-        // console.log(data);
-        res.json({ data: data });
-      } catch (erro) {
-        res.status(500).json(erro.message);
+    await Converstion.findOne({ _id: convId }).then(async (Coversion) => {
+      if (Coversion) {
+        if (Coversion.members.includes(UserId)) {
+          try {
+            const data = await Message.find({ conversationId: convId });
+            // console.log(data);
+            res.json({ data: data });
+          } catch (erro) {
+            res.status(500).json(erro.message);
+          }
+        }
       }
-    }
+    });
   } else {
     console.log("i dont know");
   }

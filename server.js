@@ -10,7 +10,7 @@ import Singin from "./routes/auth/singin/singin.js";
 import SingUp from "./routes/auth/singup/singup.js";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import SocketMessage from "./routes/auth/socket/index.js";
+import SocketMessage from "./routes/socket/index.js";
 import createmessages from "./routes/messages/createmessage.js";
 import conversations from "./routes/conversations/conversations.js";
 import senduser from "./routes/senduser.js";
@@ -35,7 +35,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: ORIGIN },
 });
-//concect app
+// concect app
 
 app.use(express.json());
 
@@ -117,26 +117,25 @@ const RemoveUser = (IdDescnected) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("connected ", socket.id);
+  // console.log("connected ", socket.id);
   socket.on("get-id", (bdid) => {
     if (bdid !== null) {
       IdFromClient = bdid;
     }
   });
   AddUser(IdFromClient, socket.id);
-  socket.on("create", (room) => {
-    socket.join(room);
-    console.log(room, "user log in ");
-  });
+  // socket.on("create", (room) => {
+  //   socket.join(room.room);
+  //   // console.log(room.room, room.userid, socket.id);
+  // });
 
-  socket.on("send-messageto-user", (data) => {
-    console.log(data);
-    io.to(data.conversationId).emit("get-message", data);
-    socket.to(data.conversationId).emit("get-message", data);
-    socket.broadcast.emit("get-message", data);
-    // console.log(data.conversationId);
-  });
-  // SocketMessage(socket, AllUsers, io);
+  // socket.on("send-messageto-user", (data) => {
+  //   io.to(data.conversationId).emit("get-message", data);
+  //   socket.to(data.conversationId).emit("get-message", data);
+  //   socket.broadcast.to(data.conversationId).emit("get-message", data);
+  //   // console.log(data.conversationId);
+  // });
+  SocketMessage(socket, AllUsers, io);
   socket.on("disconnect", () => {
     // console.log("desconected", socket.id);
     // RemoveUser(socket.id);
