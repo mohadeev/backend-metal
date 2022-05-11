@@ -6,6 +6,7 @@ const sendmessage = (socket, AllUsers, io) => {
       _id: data.conversationId,
     });
     console.log(daddd);
+    
     io.to(data.conversationId).emit("get-message", data);
     socket.to(data.conversationId).emit("get-message1", data);
     // console.log("heyyyyy:", AllUsers);
