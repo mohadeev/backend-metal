@@ -10,7 +10,7 @@ const lastlivemessage = (socket, AllUsers, io) => {
       if (meesgess.length > 0) {
         const items = meesgess[meesgess.length - 1];
         const lastmessage = "Hello im the last message here ";
-        console.log(items);
+        // console.log(items);
         socket.emit("send-last-live-messages", meesgess);
       }
     });

@@ -18,13 +18,13 @@ const joinroom = async (socket, AllUsers, io) => {
           (conversation) => {
             if (conversation) {
               if (conversation.members.includes(userid)) {
-                console.log("from here");
+                // console.log("from here");
                 socket.join(room.room);
               } else {
-                console.log("not from here");
+                // console.log("not from here");
               }
             } else {
-              console.log("not from here");
+              // console.log("not from here");
             }
           }
         );
