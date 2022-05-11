@@ -13,7 +13,7 @@ const sendmessage = (socket, AllUsers, io) => {
     // console.log("heyyyyy:", AllUsers);
     //
     socket.broadcast.to(data.conversationId).emit("get-message3", data);
-    socket.broadcast.emit("get-message4", data);
+    // socket.broadcast.emit("get-message4", data);
     io.in(data.conversationId).emit("get-message5", data);
     // console.log(data.conversationId);
   });
