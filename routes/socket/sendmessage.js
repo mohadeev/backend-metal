@@ -8,6 +8,18 @@ const sendmessage = (socket, AllUsers, io) => {
     io.to(data.conversationId).emit("get-message", data);
     console.log(AllUsers);
     console.log(data.receiver);
+    console.log(data.receiver);
+
+    const revieverid = AllUsers.filter((users) => {
+      users.userid === data.receiver;
+    });
+    const sendersid = AllUsers.filter((users) => {
+      users.userid === data.sender;
+    });
+
+    console.log("reviever:", revieverid);
+    console.log("sender:", sendersid);
+
     // socket.to(data.conversationId).emit("get-message1", data);
     // socket.emit("get-message2", data);
     // socket.broadcast.to(data.conversationId).emit("get-message3", data);
