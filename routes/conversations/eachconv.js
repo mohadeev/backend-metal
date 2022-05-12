@@ -10,8 +10,9 @@ const eachConv = async (req, res) => {
         const username = data.username;
         let id = data._d;
         let image = data.image;
-        res.json({ data: { username, id, image } });
         // console.log(userdoc);
+
+        res.json({ data: { username, id, image } });
       }
     });
 };

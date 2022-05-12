@@ -7,6 +7,7 @@ import Converstion from "../../db/schema/Converstions.js";
 
 router.post("/", async (req, res) => {
   const { message, sender, conversationId, receiver } = req.body;
+  console.log(receiver);
   await Converstion.findOne({ _id: conversationId }).then(async (Coversion) => {
     if (Coversion) {
       if (Coversion.members.includes(sender)) {
@@ -14,6 +15,7 @@ router.post("/", async (req, res) => {
           await Message.create({
             message: message,
             sender: sender,
+            receiver: receiver,
             conversationId: conversationId,
           });
           const data = await Message.find({ conversationId: conversationId });

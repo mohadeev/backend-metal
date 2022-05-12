@@ -49,9 +49,21 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/get-conv/:id", async (req, res) => {
+  let str = req.path.slice(10);
+  console.log(str);
+  if (mongoose.Types.ObjectId.isValid(str)) {
+    if (str.length >= 12 && str.length <= 24)
+      await Converstion.findOne({ _id: str }).then((userdoc) => {
+        if (userdoc) {
+          res.json({ data: { userdoc } });
+        }
+      });
+  }
+});
 router.get("/", async (req, res) => {
   const UserId = req.headers.a_custom_header;
-  if (typeof UserId !=="undefined") {
+  if (typeof UserId !== "undefined") {
     try {
       await Converstion.find({
         members: { $in: [UserId] },
