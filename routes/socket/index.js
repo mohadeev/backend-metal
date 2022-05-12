@@ -6,7 +6,7 @@ import Sendmessage from "./sendmessage.js";
 import lastlivemessage from "./lastlivemessage.js";
 
 const SocketSend = (socket, AllUsers, io) => {
-  Joinroom(socket, AllUsers, io);
+  // Joinroom(socket, AllUsers, io);
   //adduer to room
   Sendmessage(socket, AllUsers, io);
   lastlivemessage(socket, AllUsers, io);
