@@ -10,15 +10,27 @@ const sendmessage = (socket, AllUsers, io) => {
     console.log(data.receiver);
     console.log(data.sender);
 
-    const revieverid = AllUsers.filter((users) => {
-      users.userid == data.receiver;
+    const revieverid = AllUsers.filter((user) => {
+      user.userid === data.receiver;
     });
-    const sendersid = AllUsers.filter((users) => {
-      users.userid == data.sender;
+    const sendersid = AllUsers.filter((user) => {
+      user.userid === data.sender;
+    });
+    const revieverid1 = AllUsers.filter((user) => {
+      user.userid == data.receiver;
+    });
+    const sendersid1 = AllUsers.filter((user) => {
+      user.userid == data.sender;
+    });
+    const revieverid2 = AllUsers.filter((user) => {
+      user.userid = data.receiver;
+    });
+    const sendersid2 = AllUsers.filter((user) => {
+      user.userid = data.sender;
     });
 
-    console.log("reviever:", revieverid);
-    console.log("sender:", sendersid);
+    console.log("reviever:", revieverid, revieverid1, revieverid2);
+    console.log("sender:", sendersid, sendersid1, sendersid2);
 
     // socket.to(data.conversationId).emit("get-message1", data);
     // socket.emit("get-message2", data);
