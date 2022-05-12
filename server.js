@@ -139,7 +139,7 @@ io.on("connection", (socket) => {
   SocketMessage(socket, AllUsers, io);
   socket.on("disconnect", () => {
     // console.log("desconected", socket.id);
-    // RemoveUser(socket.id);
+    RemoveUser(socket.id);
   });
 });
 
