@@ -7,31 +7,23 @@ const sendmessage = (socket, AllUsers, io) => {
     // });
 
     io.to(data.conversationId).emit("get-message", data);
-    console.log(AllUsers);
-    // console.log(data.receiver);
-    // console.log(data.sender);
+    // console.log(AllUsers);
+    const receiver = data.receiver.toString("");
+    const sender = data.sender.toString("");
+    const sendersid = AllUsers.filter((user) => (user.userid = sender));
+    const revieverid = AllUsers.filter((user) => (user.userid = receiver));
 
-    const revieverid = AllUsers.filter((user) => {
-      user.userid === data.receiver;
-    });
-    const sendersid = AllUsers.filter((user) => {
-      user.userid === data.sender;
-    });
-    const revieverid1 = AllUsers.filter((user) => {
-      user.userid == data.receiver;
-    });
-    const sendersid1 = AllUsers.filter((user) => {
-      user.userid == data.sender;
-    });
-    const revieverid2 = AllUsers.filter((user) => {
-      user.userid = data.receiver;
-    });
-    const sendersid2 = AllUsers.filter((user) => {
-      user.userid = data.sender;
-    });
+    console.log("reviever:", revieverid);
+    console.log("sender:", sendersid);
 
-    console.log("reviever:", revieverid, revieverid1, revieverid2);
-    console.log("sender:", sendersid, sendersid1, sendersid2);
+    revieverid.map((Reviever) => {
+      console.log(" message sent to :", Reviever.socketid);
+      io.to(Reviever.socketid).emit("get-message", data);
+    });
+    sendersid.map((Senders) => {
+      console.log(" message sent to :", Senders.socketid);
+      io.to(Senders.socketid).emit("get-message1", data);
+    });
 
     // socket.to(data.conversationId).emit("get-message1", data);
     // socket.emit("get-message2", data);

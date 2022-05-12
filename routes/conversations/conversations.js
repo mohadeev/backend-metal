@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
 
 router.get("/get-conv/:id", async (req, res) => {
   let str = req.path.slice(10);
-  console.log(str);
+  // console.log(str);
   if (mongoose.Types.ObjectId.isValid(str)) {
     if (str.length >= 12 && str.length <= 24)
       await Converstion.findOne({ _id: str }).then((userdoc) => {
