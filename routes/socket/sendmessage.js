@@ -5,10 +5,11 @@ const sendmessage = (socket, AllUsers, io) => {
     // const daddd = await Converstion.findOne({
     //   _id: data.conversationId,
     // });
+
     io.to(data.conversationId).emit("get-message", data);
     console.log(AllUsers);
-    console.log(data.receiver);
-    console.log(data.sender);
+    // console.log(data.receiver);
+    // console.log(data.sender);
 
     const revieverid = AllUsers.filter((user) => {
       user.userid === data.receiver;
