@@ -8,13 +8,13 @@ const sendmessage = (socket, AllUsers, io) => {
     io.to(data.conversationId).emit("get-message", data);
     console.log(AllUsers);
     console.log(data.receiver);
-    console.log(data.receiver);
+    console.log(data.sender);
 
     const revieverid = AllUsers.filter((users) => {
-      users.userid === data.receiver;
+      users.userid == data.receiver;
     });
     const sendersid = AllUsers.filter((users) => {
-      users.userid === data.sender;
+      users.userid == data.sender;
     });
 
     console.log("reviever:", revieverid);
