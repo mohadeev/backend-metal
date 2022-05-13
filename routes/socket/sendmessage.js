@@ -37,6 +37,15 @@ const sendmessage = (socket, AllUsers, io) => {
     // console.log("sender:", Sender);
     io.to(Reviever).emit("get-message", data);
     io.to(Sender).emit("get-message1", data);
+    socket.to(Reviever).emit("get-message", data);
+    socket.to(Sender).emit("get-message1", data);
+    // const datass = [Reviever, Sender];
+    // socket.broadcast.emit("get-message", data);
+    // socket.broadcas.emit("get-message1", data);
+    socket.broadcast.to(Reviever).emit("get-message", data);
+    socket.broadcast.to(Sender).emit("get-message", data);
+        socket.broadcast.emit("get-message", data);
+
 
     // socket.to(data.conversationId).emit("get-message1", data);
     // socket.emit("get-message2", data);

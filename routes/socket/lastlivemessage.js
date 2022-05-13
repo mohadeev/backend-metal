@@ -11,7 +11,7 @@ const lastlivemessage = (socket, AllUsers, io) => {
         const items = meesgess[meesgess.length - 1];
         const lastmessage = "Hello im the last message here ";
         // console.log(items);
-        socket.emit("send-last-live-messages", meesgess);
+        socket.emit("send-last-live-messages", [{ message: "aS" }]);
       }
     });
     // friendid: Id,
