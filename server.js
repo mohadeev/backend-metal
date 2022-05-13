@@ -67,59 +67,46 @@ app.get("/", async (req, res) => {
   let image = users.map((itmes) => itmes.image).toString();
   res.json([{ username: username, id: id, image: image }]);
 });
+let users = [];
 
-var AllUsers = [];
-var IdFromClient;
-const AddUser = (UserId, SocketId) => {
-  AllUsers = [...AllUsers, { userid: UserId, socketid: SocketId }];
-  // console.log("data added:", AllUsers);
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
 };
 
-const RemoveUser = (IdDescnected) => {
-  AllUsers.filter((items) => items.socketid === IdDescnected);
-  // console.log("whene remove", AllUsers);
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
 };
-io.use(async (socket, next) => {
-  let cookies = socket.handshake.query.token;
-  let cookiesUser = socket.handshake.query.user;
 
-  const dataObj = { name: cookies };
-  if (cookies && cookiesUser) {
-    const cookief = cookies;
-    jwt.verify(
-      dataObj.name,
-      process.env.ACCCES_TOKKEN_SECRET,
-      function (err, decoded) {
-        if (err) {
-          console.log("error verfy");
-          return next(new Error("Authentication error"));
-        } else {
-          // console.log("true");
-          socket.decoded = decoded;
-          socket.user = decoded.user;
-          next();
-        }
-      }
-    );
-  } else {
-    console.log("error11");
-    next(new Error("Authentication error"));
-  }
-}).on("connection", (socket) => {
-  // console.log("connected ", socket.id);
-  socket.on("get-id", (bdid) => {
-    // console.log(bdid);
-    if (bdid !== null) {
-      IdFromClient = bdid;
-      AddUser(bdid, socket.id);
-    }
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
+
+io.on("connection", (socket) => {
+  //when ceonnect
+  console.log("a user connected.");
+
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
   });
-  // console.log(AllUsers.length);
 
-  SocketMessage(socket, AllUsers, io);
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    console.log(senderId, receiverId, text);
+    const user = getUser(receiverId);
+    io.to(user.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
+
+  //when disconnect
   socket.on("disconnect", () => {
-    // console.log("desconected", socket.id);
-    // RemoveUser(socket.id);
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
   });
 });
 
@@ -127,3 +114,90 @@ server.listen(PORT, (err) => {
   if (err) console.log(err);
   console.log("Server running on Port ", PORT);
 });
+
+// io.use(async (socket, next) => {
+//   let cookies = socket.handshake.query.token;
+//   let cookiesUser = socket.handshake.query.user;
+
+//   const dataObj = { name: cookies };
+//   if (cookies && cookiesUser) {
+//     const cookief = cookies;
+//     // var cookiesss = JSON.parse(cookiesss || "");
+//     // cookie.parse(socket.handshake.query || "");
+//     // console.log(cookiesss);
+//     // console.log(socket.handshake.query);
+//     jwt.verify(
+//       dataObj.name,
+//       process.env.ACCCES_TOKKEN_SECRET,
+//       function (err, decoded) {
+//         if (err) {
+//           console.log("error verfy");
+//           return next(new Error("Authentication error"));
+//         } else {
+//           socket.decoded = decoded;
+//           socket.user = decoded.user;
+//           next();
+//         }
+//       }
+//     );
+//   } else {
+//     console.log("error11");
+//     next(new Error("Authentication error"));
+//   }
+// })
+// let AllUsers = [];
+// var IdFromClient = "";
+
+// const AddUser = (UserId, SocketId) => {
+//   if (UserId !== "") {
+//     const result = AllUsers.find((obj) => {
+//       return obj.userid === UserId;
+//     });
+//     AllUsers.push({ userid: UserId, socketid: SocketId });
+//   }
+// };
+
+// const RemoveUser = (IdDescnected) => {
+//   // let objIndex = AllUsers.findIndex((obj) => obj.socketid === IdDescnected);
+//   // AllUsers.map(() => {
+//   //   console.log(objIndex);
+//   // });
+//   // console.log()
+//   // AllUsers.splice(objIndex, 1);
+//   // console.log("user removed", IdDescnected);
+//   // console.log("user removed", AllUsers);
+//   AllUsers.filter((items) => items.socketid !== IdDescnected);
+//   console.log(AllUsers);
+// };
+
+// io.on("connection", (socket) => {
+//   // console.log("connected ", socket.id);
+//   socket.on("get-id", (bdid) => {
+//     if (bdid !== null) {
+//       IdFromClient = bdid;
+//     }
+//   });
+//   AddUser(IdFromClient, socket.id);
+
+// socket.on("create", (room) => {
+//   socket.join(room.room);
+//   // console.log(room.room, room.userid, socket.id);
+// });
+
+// socket.on("send-messageto-user", (data) => {
+//   io.to(data.conversationId).emit("get-message", data);
+//   socket.to(data.conversationId).emit("get-message", data);
+//   socket.broadcast.to(data.conversationId).emit("get-message", data);
+//   // console.log(data.conversationId);
+// });
+//   SocketMessage(socket, AllUsers, io);
+//   socket.on("disconnect", () => {
+//     // console.log("desconected", socket.id);
+//     RemoveUser(socket.id);
+//   });
+// });
+
+// server.listen(PORT, (err) => {
+//   if (err) console.log(err);
+//   console.log("Server running on Port ", PORT);
+// });
