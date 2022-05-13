@@ -12,7 +12,6 @@ router.post("/", async (req, res) => {
     if (Coversion) {
       if (Coversion.members.includes(sender)) {
         try {
-          console.log(message, sender, conversationId, receiver);
           await Message.create({
             message: message,
             sender: sender,

@@ -72,12 +72,12 @@ var AllUsers = [];
 var IdFromClient;
 const AddUser = (UserId, SocketId) => {
   AllUsers = [...AllUsers, { userid: UserId, socketid: SocketId }];
-  console.log("data added:", AllUsers);
+  // console.log("data added:", AllUsers);
 };
 
 const RemoveUser = (IdDescnected) => {
   AllUsers.filter((items) => items.socketid === IdDescnected);
-  console.log("whene remove", AllUsers);
+  // console.log("whene remove", AllUsers);
 };
 io.use(async (socket, next) => {
   let cookies = socket.handshake.query.token;
@@ -108,18 +108,18 @@ io.use(async (socket, next) => {
 }).on("connection", (socket) => {
   // console.log("connected ", socket.id);
   socket.on("get-id", (bdid) => {
-    console.log(bdid);
+    // console.log(bdid);
     if (bdid !== null) {
       IdFromClient = bdid;
       AddUser(bdid, socket.id);
     }
   });
-  console.log(AllUsers.length);
+  // console.log(AllUsers.length);
 
   SocketMessage(socket, AllUsers, io);
   socket.on("disconnect", () => {
     // console.log("desconected", socket.id);
-    RemoveUser(socket.id);
+    // RemoveUser(socket.id);
   });
 });
 
