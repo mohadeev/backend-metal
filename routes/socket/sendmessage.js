@@ -16,14 +16,27 @@ const sendmessage = (socket, AllUsers, io) => {
     console.log("reviever:", revieverid);
     console.log("sender:", sendersid);
 
-    revieverid.map((Reviever) => {
-      console.log(" message sent to :", Reviever.socketid);
-      io.to(Reviever.socketid).emit("get-message", data);
-    });
-    sendersid.map((Senders) => {
-      console.log(" message sent to :", Senders.socketid);
-      io.to(Senders.socketid).emit("get-message1", data);
-    });
+    // revieverid.map((Reviever) => {
+    //   console.log(" message sent to : reciver as well", Reviever.socketid);
+    //   io.to(Reviever.socketid).emit("get-message", data);
+    // });
+    // sendersid.map((Senders) => {
+    //   console.log(" message sent to : sender as well", Senders.socketid);
+    //   io.to(Senders.socketid).emit("get-message", data);
+    // });
+
+    // revieverid.map((Reviever) => {
+    //   console.log(" message sent to : reciver as well", Reviever.socketid);
+    //   io.to(Reviever.socketid).emit("get-message", data);
+    // });
+
+    const Reviever = revieverid[revieverid.length - 1].socketid;
+    const Sender = sendersid[sendersid.length - 1].socketid;
+
+    // console.log("reviever:", Reviever);
+    // console.log("sender:", Sender);
+    io.to(Reviever).emit("get-message", data);
+    io.to(Sender).emit("get-message1", data);
 
     // socket.to(data.conversationId).emit("get-message1", data);
     // socket.emit("get-message2", data);
