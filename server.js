@@ -101,7 +101,8 @@ io.on("connection", (socket) => {
       senderId,
       text,
     });
-    if (typeof user !== undefined) {
+
+    if (typeof user !== "undefined") {
       io.to(user.socketId).emit("getMessage", {
         senderId,
         text,
