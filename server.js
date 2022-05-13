@@ -101,11 +101,12 @@ io.on("connection", (socket) => {
       senderId,
       text,
     });
-    //sdsdiosdoicsoidc
-    io.to(user.socketId).emit("getMessage", {
-      senderId,
-      text,
-    });
+    if (typeof user !== undefined) {
+      io.to(user.socketId).emit("getMessage", {
+        senderId,
+        text,
+      });
+    }
   });
 
   //when disconnect
