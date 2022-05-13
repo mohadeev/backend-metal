@@ -94,8 +94,14 @@ io.on("connection", (socket) => {
 
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    console.log(senderId, receiverId, text);
+    // console.log(senderId, receiverId, text);
     const user = getUser(receiverId);
+    const sender = getUser(senderId);
+    io.to(sender.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+    //sdsdiosdoicsoidc
     io.to(user.socketId).emit("getMessage", {
       senderId,
       text,
