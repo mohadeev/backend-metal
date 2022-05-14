@@ -48,7 +48,7 @@ app.use(function (req, res, next) {
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-Requested-With,content-type,a_custom_header"
-  ); //notice here carefully
+  );
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
@@ -70,16 +70,11 @@ app.get("/", async (req, res) => {
 let users = [];
 
 const addUser = (userId, socketId) => {
-  // !users.some((user) => user.userId === userId) &&
   users.push({ userId, socketId });
 };
 
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
-};
-
-const getUser = (userId) => {
-  return users.find((user) => user.userId === userId);
 };
 
 io.on("connection", (socket) => {
@@ -93,27 +88,39 @@ io.on("connection", (socket) => {
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    const usersid = users.filter((send) => send.userId === senderId);
-    const receiverid = users.filter((send) => send.userId === receiverId);
-    // const user = getUser(receiverId);
-    // const sender = getUser(senderId);
-    usersid.map((sender) => {
-      io.to(sender.socketId).emit("getMessage", {
-        senderId,
-        text,
-      });
-    });
-    // console.log(receiverid);
-    if (receiverid.length >= 1) {
-      receiverid.map((user) => {
-        io.to(user.socketId).emit("getMessage", {
+  socket.on(
+    "sendMessage",
+    async ({ senderId, conversationId, receiverId, text }) => {
+      // const datatest = text.map((item) => {
+      //   item.unread = true;
+      //   console.log(item);
+      //   return item;
+      // });
+      const usersid = users.filter((send) => send.userId === senderId);
+      const receiverid = users.filter((send) => send.userId === receiverId);
+      usersid.map((sender) => {
+        io.to(sender.socketId).emit("getMessage", {
           senderId,
           text,
+          conversationId,
         });
       });
+      if (receiverid.length >= 1) {
+        let conditions = { conversationId: conversationId };
+        receiverid.map((user) => {
+          io.to(user.socketId).emit("getMessage", {
+            senderId,
+            text,
+            conversationId,
+          });
+        });
+
+        try {
+          await Message.updateMany(conditions, { unread: true });
+        } catch (err) {}
+      }
     }
-  });
+  );
 
   socket.on("disconnect", () => {
     // console.log("a user disconnected!");
@@ -157,59 +164,3 @@ server.listen(PORT, (err) => {
 //     next(new Error("Authentication error"));
 //   }
 // })
-// let AllUsers = [];
-// var IdFromClient = "";
-
-// const AddUser = (UserId, SocketId) => {
-//   if (UserId !== "") {
-//     const result = AllUsers.find((obj) => {
-//       return obj.userid === UserId;
-//     });
-//     AllUsers.push({ userid: UserId, socketid: SocketId });
-//   }
-// };
-
-// const RemoveUser = (IdDescnected) => {
-//   // let objIndex = AllUsers.findIndex((obj) => obj.socketid === IdDescnected);
-//   // AllUsers.map(() => {
-//   //   console.log(objIndex);
-//   // });
-//   // console.log()
-//   // AllUsers.splice(objIndex, 1);
-//   // console.log("user removed", IdDescnected);
-//   // console.log("user removed", AllUsers);
-//   AllUsers.filter((items) => items.socketid !== IdDescnected);
-//   console.log(AllUsers);
-// };
-
-// io.on("connection", (socket) => {
-//   // console.log("connected ", socket.id);
-//   socket.on("get-id", (bdid) => {
-//     if (bdid !== null) {
-//       IdFromClient = bdid;
-//     }
-//   });
-//   AddUser(IdFromClient, socket.id);
-
-// socket.on("create", (room) => {
-//   socket.join(room.room);
-//   // console.log(room.room, room.userid, socket.id);
-// });
-
-// socket.on("send-messageto-user", (data) => {
-//   io.to(data.conversationId).emit("get-message", data);
-//   socket.to(data.conversationId).emit("get-message", data);
-//   socket.broadcast.to(data.conversationId).emit("get-message", data);
-//   // console.log(data.conversationId);
-// });
-//   SocketMessage(socket, AllUsers, io);
-//   socket.on("disconnect", () => {
-//     // console.log("desconected", socket.id);
-//     RemoveUser(socket.id);
-//   });
-// });
-
-// server.listen(PORT, (err) => {
-//   if (err) console.log(err);
-//   console.log("Server running on Port ", PORT);
-// });
