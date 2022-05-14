@@ -75,6 +75,7 @@ const addUser = (userId, socketId) => {
 
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
+  console.log(users);
 };
 
 io.on("connection", (socket) => {
