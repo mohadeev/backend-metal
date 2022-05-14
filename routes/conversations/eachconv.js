@@ -16,7 +16,7 @@ const eachConv = async (req, res) => {
           var unreadmessagesArray = datamessage.filter(
             (messages) => messages.unread === false && messages.receiver !== str
           );
-          console.log(unreadmessagesArray);
+          // console.log(unreadmessagesArray);
         } catch (err) {
           console.log(err);
         }
@@ -26,7 +26,7 @@ const eachConv = async (req, res) => {
         let id = data._d;
         let image = data.image;
         let unreadmessges = unreadmessagesArray.length;
-        console.log(unreadmessges);
+        // console.log(unreadmessges);
         if (datamessage.length >= 1 && unreadmessagesArray.length >= 1) {
           const lastmessage = datamessage[datamessage.length - 1];
           res.json({

@@ -69,13 +69,31 @@ router.get("/", async (req, res) => {
         members: { $in: [UserId] },
       }).then(async (document) => {
         //   console.log(document);
-        
+
         res.status(200).json({ data: document });
       });
     } catch (err) {
       res.json(err);
     }
   }
+});
+
+router.post("/unread/:id", async (req, res) => {
+  const { conversationId } = req.body;
+  const { lastmessage } = req.body;
+  let conditions = { unread: false, conversationId };
+  // let options = { unread: false };
+  await Message.updateMany(conditions, { unread: true }).then(
+    async (document) => {
+      console.log(document);
+      await Message.find({ _id: lastmessage, conversationId }).then(
+        (documentmessage) => {
+          console.log(documentmessage);
+          res.json({ data: documentmessage });
+        }
+      );
+    }
+  );
 });
 
 router.get("/:id", eachConv);

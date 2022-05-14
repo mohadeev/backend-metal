@@ -84,7 +84,7 @@ const getUser = (userId) => {
 
 io.on("connection", (socket) => {
   //when ceonnect
-  console.log("a user connected.");
+  // console.log("a user connected.");
 
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
@@ -104,7 +104,7 @@ io.on("connection", (socket) => {
         text,
       });
     });
-    console.log(receiverid);
+    // console.log(receiverid);
     if (receiverid.length >= 1) {
       receiverid.map((user) => {
         io.to(user.socketId).emit("getMessage", {
@@ -115,9 +115,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  //when disconnect
   socket.on("disconnect", () => {
-    console.log("a user disconnected!");
+    // console.log("a user disconnected!");
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
