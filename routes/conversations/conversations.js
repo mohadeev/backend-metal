@@ -68,7 +68,7 @@ router.get("/", async (req, res) => {
       await Converstion.find({
         members: { $in: [UserId] },
       }).then(async (document) => {
-        //   console.log(document);
+        // console.log(document);
 
         res.status(200).json({ data: document });
       });
@@ -81,19 +81,21 @@ router.get("/", async (req, res) => {
 router.post("/unread/:id", async (req, res) => {
   const { conversationId } = req.body;
   const { lastmessage } = req.body;
-  let conditions = { unread: false, conversationId };
-  // let options = { unread: false };
-  await Message.updateMany(conditions, { unread: true }).then(
-    async (document) => {
-      console.log(document);
-      await Message.find({ _id: lastmessage, conversationId }).then(
-        (documentmessage) => {
-          console.log(documentmessage);
-          res.json({ data: documentmessage });
-        }
-      );
-    }
-  );
+  console.log(lastmessage);
+  let conditions = { unread: false, conversationId, lastmessage };
+  if (mongoose.Types.ObjectId.isValid(conversationId && lastmessage)) {
+    await Message.updateMany(conditions, { unread: true }).then(
+      async (document) => {
+        console.log(document);
+        await Message.findOne({ _id: lastmessage, conversationId }).then(
+          (documentmessage) => {
+            console.log(documentmessage);
+            res.json({ data: documentmessage });
+          }
+        );
+      }
+    );
+  }
 });
 
 router.get("/:id", eachConv);
