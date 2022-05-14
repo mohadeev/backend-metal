@@ -69,6 +69,7 @@ router.get("/", async (req, res) => {
         members: { $in: [UserId] },
       }).then(async (document) => {
         //   console.log(document);
+        
         res.status(200).json({ data: document });
       });
     } catch (err) {

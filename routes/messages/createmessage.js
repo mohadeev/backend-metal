@@ -16,6 +16,7 @@ router.post("/", async (req, res) => {
             message: message,
             sender: sender,
             receiver: receiver,
+            unread: false,
             conversationId: conversationId,
           });
           const data = await Message.find({ conversationId: conversationId });

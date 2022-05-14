@@ -7,16 +7,12 @@ const MessageSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-
+    unread: Boolean,
+    nothing: String,
     sender: {
       type: String,
     },
     receiver: {
-      type: String,
-    },
-    unread: { Boolean, default: false },
-
-    to: {
       type: String,
     },
   },
