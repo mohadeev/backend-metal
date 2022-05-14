@@ -26,14 +26,14 @@ const eachConv = async (req, res) => {
         let id = data._d;
         let image = data.image;
         let unreadmessges = unreadmessagesArray.length;
-        console.log(unreadmessges);;
+        console.log(unreadmessges);
         if (datamessage.length >= 1 && unreadmessagesArray.length >= 1) {
-          const lastmessage = datamessage[datamessage.length - 1].message;
+          const lastmessage = datamessage[datamessage.length - 1];
           res.json({
             data: { username, id, image, unreadmessges, lastmessage },
           });
         } else if (datamessage.length >= 1 && unreadmessagesArray.length <= 0) {
-          const lastmessage = datamessage[datamessage.length - 1].message;
+          const lastmessage = datamessage[datamessage.length - 1];
           res.json({ data: { username, id, image, lastmessage } });
         } else {
           res.json({ data: { username, id, image } });
