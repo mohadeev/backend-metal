@@ -86,10 +86,10 @@ router.post("/unread/:id", async (req, res) => {
   if (mongoose.Types.ObjectId.isValid(conversationId && lastmessage)) {
     await Message.updateMany(conditions, { unread: true }).then(
       async (document) => {
-        console.log(document);
+        // console.log(document);
         await Message.findOne({ _id: lastmessage, conversationId }).then(
           (documentmessage) => {
-            console.log(documentmessage);
+            // console.log(documentmessage);
             res.json({ data: documentmessage });
           }
         );

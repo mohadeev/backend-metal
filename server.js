@@ -91,17 +91,17 @@ io.on("connection", (socket) => {
   socket.on(
     "sendMessage",
     async ({ senderId, conversationId, receiverId, text }) => {
-      // const datatest = text.map((item) => {
-      //   item.unread = true;
-      //   console.log(item);
-      //   return item;
-      // });
+      const datatest = text.map((item) => {
+        item.unread = true;
+        return item;
+      });
       const usersid = users.filter((send) => send.userId === senderId);
       const receiverid = users.filter((send) => send.userId === receiverId);
+      console.log(conversationId);
       usersid.map((sender) => {
         io.to(sender.socketId).emit("getMessage", {
           senderId,
-          text,
+          text: datatest,
           conversationId,
         });
       });
@@ -110,11 +110,10 @@ io.on("connection", (socket) => {
         receiverid.map((user) => {
           io.to(user.socketId).emit("getMessage", {
             senderId,
-            text,
+            text: text,
             conversationId,
           });
         });
-
         try {
           await Message.updateMany(conditions, { unread: true });
         } catch (err) {}
