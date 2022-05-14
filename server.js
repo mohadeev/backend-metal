@@ -70,8 +70,8 @@ app.get("/", async (req, res) => {
 let users = [];
 
 const addUser = (userId, socketId) => {
-  !users.some((user) => user.userId === userId) &&
-    users.push({ userId, socketId });
+  // !users.some((user) => user.userId === userId) &&
+  users.push({ userId, socketId });
 };
 
 const removeUser = (socketId) => {
@@ -94,18 +94,23 @@ io.on("connection", (socket) => {
 
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    // console.log(senderId, receiverId, text);
-    const user = getUser(receiverId);
-    const sender = getUser(senderId);
-    io.to(sender.socketId).emit("getMessage", {
-      senderId,
-      text,
-    });
-
-    if (typeof user !== "undefined") {
-      io.to(user.socketId).emit("getMessage", {
+    const usersid = users.filter((send) => send.userId === senderId);
+    const receiverid = users.filter((send) => send.userId === receiverId);
+    // const user = getUser(receiverId);
+    // const sender = getUser(senderId);
+    usersid.map((sender) => {
+      io.to(sender.socketId).emit("getMessage", {
         senderId,
         text,
+      });
+    });
+    console.log(receiverid);
+    if (receiverid.length >= 1) {
+      receiverid.map((user) => {
+        io.to(user.socketId).emit("getMessage", {
+          senderId,
+          text,
+        });
       });
     }
   });
