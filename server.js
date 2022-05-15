@@ -120,13 +120,13 @@ io.use(async (socket, next) => {
   //send and get message
   socket.on(
     "sendMessage",
-    async ({ senderId, conversationId, receiverId, text }) => {
-      const usersid = users.filter((send) => send.userId === senderId);
-      const receiverid = users.filter((send) => send.userId === receiverId);
+    async ({ sender, conversationId, receiver, text }) => {
+      const usersid = users.filter((send) => send.userId === sender);
+      const receiverid = users.filter((send) => send.userId === receiver);
       console.log(conversationId);
       usersid.map((sender) => {
         io.to(sender.socketId).emit("getMessage", {
-          senderId,
+          sender,
           text,
           conversationId,
         });
@@ -135,7 +135,7 @@ io.use(async (socket, next) => {
         let conditions = { conversationId: conversationId };
         receiverid.map((user) => {
           io.to(user.socketId).emit("getMessage", {
-            senderId,
+            sender,
             text: text,
             conversationId,
           });
