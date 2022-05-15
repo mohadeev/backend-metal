@@ -78,7 +78,36 @@ const removeUser = (socketId) => {
   console.log(users);
 };
 
-io.on("connection", (socket) => {
+io.use(async (socket, next) => {
+  let cookies = socket.handshake.query.token;
+  let cookiesUser = socket.handshake.query.user;
+
+  const dataObj = { name: cookies };
+  if (cookies && cookiesUser) {
+    const cookief = cookies;
+    // var cookiesss = JSON.parse(cookiesss || "");
+    // cookie.parse(socket.handshake.query || "");
+    // console.log(cookiesss);
+    // console.log(socket.handshake.query);
+    jwt.verify(
+      dataObj.name,
+      process.env.ACCCES_TOKKEN_SECRET,
+      function (err, decoded) {
+        if (err) {
+          console.log("error verfy");
+          return next(new Error("Authentication error"));
+        } else {
+          socket.decoded = decoded;
+          socket.user = decoded.user;
+          next();
+        }
+      }
+    );
+  } else {
+    console.log("error11");
+    next(new Error("Authentication error"));
+  }
+}).on("connection", (socket) => {
   //when ceonnect
   // console.log("a user connected.");
 
@@ -92,17 +121,13 @@ io.on("connection", (socket) => {
   socket.on(
     "sendMessage",
     async ({ senderId, conversationId, receiverId, text }) => {
-      const datatest = text.map((item) => {
-        item.unread = true;
-        return item;
-      });
       const usersid = users.filter((send) => send.userId === senderId);
       const receiverid = users.filter((send) => send.userId === receiverId);
       console.log(conversationId);
       usersid.map((sender) => {
         io.to(sender.socketId).emit("getMessage", {
           senderId,
-          text: datatest,
+          text,
           conversationId,
         });
       });
@@ -133,34 +158,3 @@ server.listen(PORT, (err) => {
   if (err) console.log(err);
   console.log("Server running on Port ", PORT);
 });
-
-// io.use(async (socket, next) => {
-//   let cookies = socket.handshake.query.token;
-//   let cookiesUser = socket.handshake.query.user;
-
-//   const dataObj = { name: cookies };
-//   if (cookies && cookiesUser) {
-//     const cookief = cookies;
-//     // var cookiesss = JSON.parse(cookiesss || "");
-//     // cookie.parse(socket.handshake.query || "");
-//     // console.log(cookiesss);
-//     // console.log(socket.handshake.query);
-//     jwt.verify(
-//       dataObj.name,
-//       process.env.ACCCES_TOKKEN_SECRET,
-//       function (err, decoded) {
-//         if (err) {
-//           console.log("error verfy");
-//           return next(new Error("Authentication error"));
-//         } else {
-//           socket.decoded = decoded;
-//           socket.user = decoded.user;
-//           next();
-//         }
-//       }
-//     );
-//   } else {
-//     console.log("error11");
-//     next(new Error("Authentication error"));
-//   }
-// })
