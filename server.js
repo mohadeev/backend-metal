@@ -124,8 +124,8 @@ io.use(async (socket, next) => {
       const usersid = users.filter((send) => send.userId === sender);
       const receiverid = users.filter((send) => send.userId === receiver);
       console.log(conversationId);
-      usersid.map((sender) => {
-        io.to(sender.socketId).emit("getMessage", {
+      usersid.map((user) => {
+        io.to(user.socketId).emit("getMessage", {
           sender,
           text,
           conversationId,
