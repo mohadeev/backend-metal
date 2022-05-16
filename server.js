@@ -111,15 +111,7 @@ io.use(async (socket, next) => {
     async ({ sender, conversationId, receiver, text }) => {
       const usersid = users.filter((send) => send.userId === sender);
       const receiverid = users.filter((send) => send.userId === receiver);
-      console.log(usersid, receiverid);
-      usersid.map((user) => {
-        console.log(user.socketId, user.socketId);
-        io.to(user.socketId).emit("getMessage", {
-          sender,
-          text,
-          conversationId,
-        });
-      });
+      // console.log(usersid, receiverid);
       if (receiverid.length >= 1) {
         let conditions = { conversationId: conversationId };
         receiverid.map((user) => {
@@ -129,6 +121,16 @@ io.use(async (socket, next) => {
             conversationId,
           });
         });
+        
+        usersid.map((user) => {
+          console.log(user.socketId, user.socketId);
+          io.to(user.socketId).emit("getMessage", {
+            sender,
+            text,
+            conversationId,
+          });
+        });
+
         try {
           await Message.updateMany(conditions, { unread: true });
         } catch (err) {}
