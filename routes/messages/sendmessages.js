@@ -22,7 +22,8 @@ const sendmessages = async (req, res) => {
           try {
             const data = await Message.find({ conversationId: convId });
             // console.log(data);
-            res.json({ data: data });
+            const data2 = await Message.find().sort({ _id: -1 }).limit(10);
+            res.json({ data: data2 });
           } catch (erro) {
             res.status(500).json(erro.message);
           }

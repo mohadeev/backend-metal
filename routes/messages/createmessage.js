@@ -19,8 +19,7 @@ router.post("/", async (req, res) => {
             unread: false,
             conversationId: conversationId,
           });
-          const data = await Message.find({ conversationId: conversationId });
-          
+          // const data = await Message.find({ conversationId: conversationId });
           // // const data = await Message.find({ conversationId: conversationId });
           const data2 = await Message.find().sort({ _id: -1 }).limit(1);
           // // console.log(data2);

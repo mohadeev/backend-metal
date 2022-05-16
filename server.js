@@ -80,9 +80,11 @@ const removeUser = (socketId) => {
 io.use(async (socket, next) => {
   let cookies = socket.handshake.query.token;
   let cookiesUser = socket.handshake.query.user;
+
   const dataObj = { name: cookies };
   if (cookies && cookiesUser) {
     const cookief = cookies;
+   
     jwt.verify(
       dataObj.name,
       process.env.ACCCES_TOKKEN_SECRET,
@@ -102,18 +104,25 @@ io.use(async (socket, next) => {
     next(new Error("Authentication error"));
   }
 }).on("connection", (socket) => {
+  //when ceonnect
+  // console.log("a user connected.");
+
+  //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);
   });
+
+  //send and get message
   socket.on(
     "sendMessage",
     async ({ sender, conversationId, receiver, text }) => {
-      const usersid = users.filter((send) => send.userId === sender);
-      const receiverid = users.filter((send) => send.userId === receiver);
-      // console.log(usersid, receiverid);
+      let usersid = users.filter((send) => send.userId === sender);
+      let receiverid = users.filter((send) => send.userId === receiver);
+      receiverid.reverse();
+      usersid.reverse();
+
       if (receiverid.length >= 1) {
-        let conditions = { conversationId: conversationId };
         receiverid.map((user) => {
           io.to(user.socketId).emit("getMessage", {
             sender,
@@ -121,17 +130,21 @@ io.use(async (socket, next) => {
             conversationId,
           });
         });
-        
-        usersid.map((user) => {
-          console.log(user.socketId, user.socketId);
-          io.to(user.socketId).emit("getMessage", {
-            sender,
-            text,
-            conversationId,
-          });
-        });
-
         try {
+          await Message.updateMany(conditions, { unread: true });
+        } catch (err) {}
+      }
+      // usersid.map((sender) => {
+      //   io.to(sender.socketId).emit("getMessage", {
+      //     sender,
+      //     text,
+      //     conversationId,
+      //   });
+      // });
+
+      if (receiverid.length >= 1) {
+        try {
+          let conditions = { conversationId: conversationId };
           await Message.updateMany(conditions, { unread: true });
         } catch (err) {}
       }
@@ -139,6 +152,7 @@ io.use(async (socket, next) => {
   );
 
   socket.on("disconnect", () => {
+    // console.log("a user disconnected!");
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
