@@ -23,7 +23,8 @@ router.post("/", async (req, res) => {
           // // const data = await Message.find({ conversationId: conversationId });
           const data2 = await Message.find().sort({ _id: -1 }).limit(1);
           // // console.log(data2);
-          res.json({ data: data2 });
+          const dataa = data2[0];
+          res.json({ data: dataa });
 
           // res.json({ data: data });
         } catch (erro) {

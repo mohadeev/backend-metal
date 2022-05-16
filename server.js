@@ -104,10 +104,6 @@ io.use(async (socket, next) => {
     next(new Error("Authentication error"));
   }
 }).on("connection", (socket) => {
-  //when ceonnect
-  // console.log("a user connected.");
-
-  //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);
@@ -117,11 +113,14 @@ io.use(async (socket, next) => {
   socket.on(
     "sendMessage",
     async ({ sender, conversationId, receiver, text }) => {
+      console.log(text);
+      //array.findIndex((obj) => obj.id === obj.id) !== -1
+
       let usersid = users.filter((send) => send.userId === sender);
       let receiverid = users.filter((send) => send.userId === receiver);
+      console.log("sender", sender);
       receiverid.reverse();
       usersid.reverse();
-
       if (receiverid.length >= 1) {
         receiverid.map((user) => {
           io.to(user.socketId).emit("getMessage", {
@@ -130,12 +129,9 @@ io.use(async (socket, next) => {
             conversationId,
           });
         });
-        try {
-          await Message.updateMany(conditions, { unread: true });
-        } catch (err) {}
       }
-      usersid.map((sender) => {
-        io.to(sender.socketId).emit("getMessage", {
+      usersid.map((user) => {
+        io.to(user.socketId).emit("getMessage", {
           sender,
           text,
           conversationId,

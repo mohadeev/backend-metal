@@ -21,7 +21,6 @@ const sendmessages = async (req, res) => {
         if (Coversion.members.includes(UserId)) {
           try {
             const data = await Message.find({ conversationId: convId });
-            // console.log(data);
             const data2 = await Message.find().sort({ _id: -1 }).limit(10);
             res.json({ data: data2 });
           } catch (erro) {
