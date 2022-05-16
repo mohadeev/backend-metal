@@ -75,20 +75,14 @@ const addUser = (userId, socketId) => {
 
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
-  console.log(users);
 };
 
 io.use(async (socket, next) => {
   let cookies = socket.handshake.query.token;
   let cookiesUser = socket.handshake.query.user;
-
   const dataObj = { name: cookies };
   if (cookies && cookiesUser) {
     const cookief = cookies;
-    // var cookiesss = JSON.parse(cookiesss || "");
-    // cookie.parse(socket.handshake.query || "");
-    // console.log(cookiesss);
-    // console.log(socket.handshake.query);
     jwt.verify(
       dataObj.name,
       process.env.ACCCES_TOKKEN_SECRET,
@@ -108,23 +102,18 @@ io.use(async (socket, next) => {
     next(new Error("Authentication error"));
   }
 }).on("connection", (socket) => {
-  //when ceonnect
-  // console.log("a user connected.");
-
-  //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);
   });
-
-  //send and get message
   socket.on(
     "sendMessage",
     async ({ sender, conversationId, receiver, text }) => {
       const usersid = users.filter((send) => send.userId === sender);
       const receiverid = users.filter((send) => send.userId === receiver);
-      console.log(conversationId);
+      console.log(usersid, receiverid);
       usersid.map((user) => {
+        console.log(user.socketId, user.socketId);
         io.to(user.socketId).emit("getMessage", {
           sender,
           text,
@@ -148,7 +137,6 @@ io.use(async (socket, next) => {
   );
 
   socket.on("disconnect", () => {
-    // console.log("a user disconnected!");
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
