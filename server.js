@@ -84,7 +84,7 @@ io.use(async (socket, next) => {
   const dataObj = { name: cookies };
   if (cookies && cookiesUser) {
     const cookief = cookies;
-   
+
     jwt.verify(
       dataObj.name,
       process.env.ACCCES_TOKKEN_SECRET,
@@ -134,13 +134,13 @@ io.use(async (socket, next) => {
           await Message.updateMany(conditions, { unread: true });
         } catch (err) {}
       }
-      // usersid.map((sender) => {
-      //   io.to(sender.socketId).emit("getMessage", {
-      //     sender,
-      //     text,
-      //     conversationId,
-      //   });
-      // });
+      usersid.map((sender) => {
+        io.to(sender.socketId).emit("getMessage", {
+          sender,
+          text,
+          conversationId,
+        });
+      });
 
       if (receiverid.length >= 1) {
         try {
