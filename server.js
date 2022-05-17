@@ -113,12 +113,9 @@ io.use(async (socket, next) => {
   socket.on(
     "sendMessage",
     async ({ sender, conversationId, receiver, text }) => {
-      console.log(text);
       //array.findIndex((obj) => obj.id === obj.id) !== -1
-
       let usersid = users.filter((send) => send.userId === sender);
       let receiverid = users.filter((send) => send.userId === receiver);
-      console.log("sender", sender);
       receiverid.reverse();
       usersid.reverse();
       if (receiverid.length >= 1) {

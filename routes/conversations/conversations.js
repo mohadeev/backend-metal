@@ -81,20 +81,16 @@ router.get("/", async (req, res) => {
 router.post("/unread/:id", async (req, res) => {
   const { conversationId } = req.body;
   const { lastmessage } = req.body;
-  console.log(lastmessage);
   let conditions = { unread: false, conversationId, lastmessage };
   if (mongoose.Types.ObjectId.isValid(conversationId && lastmessage)) {
-    await Message.updateMany(conditions, { unread: true }).then(
-      async (document) => {
-        // console.log(document);
-        await Message.findOne({ _id: lastmessage, conversationId }).then(
-          (documentmessage) => {
-            // console.log(documentmessage);
-            res.json({ data: documentmessage });
-          }
-        );
-      }
-    );
+    await Message.updateMany(conditions, { unread: true }).then(async () => {
+      await Message.findOne({ _id: lastmessage, conversationId }).then(
+        async (documentmessage) => {
+          const data2 = await Message.find().sort({ _id: -1 }).limit(10);
+          res.json({ data: { messages: data2, lastmessage: documentmessage } });
+        }
+      );
+    });
   }
 });
 
