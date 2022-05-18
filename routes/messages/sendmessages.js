@@ -16,12 +16,13 @@ const sendmessages = async (req, res) => {
     convId.length <= 24 &&
     typeof UserId !== "undefined"
   ) {
+    console.log(convId);
     await Converstion.findOne({ _id: convId }).then(async (Coversion) => {
       if (Coversion) {
         if (Coversion.members.includes(UserId)) {
           try {
-            const data = await Message.find({ conversationId: convId });
-            const data2 = await Message.find().sort({ _id: -1 }).limit(10)
+            const data2 = await Message.find().sort({ _id: -1 }).limit(1);
+            console.log(data2, "id", convId);
             res.json({ data: data2.reverse() });
           } catch (erro) {
             res.status(500).json(erro.message);

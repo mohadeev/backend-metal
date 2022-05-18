@@ -15,10 +15,11 @@ router.post("/", async (req, res) => {
           await Message.create({
             message: message,
             sender: sender,
-            receiver: receiver,
+            receiver: "receiver",
             unread: false,
-            conversationId: conversationId,
+            conversationId: "conversationId",
           });
+          console.log("here is the id", conversationId);
           const data2 = await Message.find().sort({ _id: -1 }).limit(1);
           // // console.log(data2);
           const dataa = data2[0];
