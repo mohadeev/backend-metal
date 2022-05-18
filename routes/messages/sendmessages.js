@@ -4,7 +4,7 @@ import Message from "../../db/schema/Message.js";
 import Converstion from "../../db/schema/Converstions.js";
 
 const sendmessages = async (req, res) => {
-  console.log("sd");;
+  console.log("sd");
   const asPath = req.path;
   let UrlBeRemove = "/get-mesages/";
   let convId = asPath.replace(UrlBeRemove, "").toString("hex");
@@ -21,9 +21,11 @@ const sendmessages = async (req, res) => {
       if (Coversion) {
         if (Coversion.members.includes(UserId)) {
           try {
-            // const data2 = await Message.find()
-            const data = await Message.find({ conversationId: convId }).sort({ _id: -1 }).limit(10).reverse()
-            res.json({ data: data });
+            const data = await Message.find({ conversationId: convId })
+              .sort({ _id: -1 })
+              .limit(10);
+
+            res.json({ data: data.reverse() });
           } catch (erro) {
             res.status(500).json(erro.message);
           }
