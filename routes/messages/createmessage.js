@@ -7,7 +7,7 @@ import Converstion from "../../db/schema/Converstions.js";
 
 router.post("/", async (req, res) => {
   const { message, sender, conversationId, receiver } = req.body;
-  // console.log("reviever is ", receiver);
+  console.log("reviever is ", receiver);
   await Converstion.findOne({ _id: conversationId }).then(async (Coversion) => {
     if (Coversion) {
       if (Coversion.members.includes(sender)) {
@@ -15,14 +15,13 @@ router.post("/", async (req, res) => {
           await Message.create({
             message: message,
             sender: sender,
-            receiver: "receiver",
+            receiver: receiver,
             unread: false,
-            conversationId: "conversationId",
+            conversationId: conversationId,
           });
-          console.log("here is the id", conversationId);
           const data2 = await Message.find().sort({ _id: -1 }).limit(1);
-          // // console.log(data2);
           const dataa = data2[0];
+          console.log(dataa);
           res.json({ data: dataa });
 
           // res.json({ data: data });
