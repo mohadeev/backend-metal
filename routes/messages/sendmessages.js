@@ -20,24 +20,11 @@ const sendmessages = async (req, res) => {
     await Converstion.findOne({ _id: convId }).then(async (Coversion) => {
       if (Coversion) {
         if (Coversion.members.includes(UserId)) {
-          if (scrolling === "false") {
-            console.log("false :  ", scrolling);
-            try {
-              const data = await Message.find({ conversationId: convId })
-                .sort({ _id: -1 })
-                .limit(8);
-              res.json({ data: data.reverse() });
-            } catch (erro) {
-              res.status(500).json(erro.message);
-            }
-          } else if (scrolling === "true") {
-            console.log("true :  ", scrolling);
-            try {
-              const data = await Message.find({ conversationId: convId });
-              res.json({ data: data });
-            } catch (erro) {
-              res.status(500).json(erro.message);
-            }
+          try {
+            const data = await Message.find({ conversationId: convId });
+            res.json({ data: data });
+          } catch (erro) {
+            res.status(500).json(erro.message);
           }
         }
       }
