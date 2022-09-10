@@ -1,42 +1,43 @@
 import express from "express";
 import mongoose from "mongoose";
-const router = express.Router();
-import dbConnect from "../../../db/dbConnect.js";
+const routerSignIn = express.Router();
 import User from "../../../db/schema/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-router.post("/", async (req, res) => {
+routerSignIn.post("/", async (req, res) => {
   const { password, email } = req.body;
-  dbConnect();
+  console.log(req.body);
   await User.findOne({ email: email }).then((docadded) => {
-    console.log(password, email);
     if (docadded) {
+      console.log(docadded);
       bcrypt.compare(password, docadded.password).then((result) => {
         if (result) {
           const id = docadded._id.toString("hex");
-          const username = docadded.username;
-          let auth = true;
-          let userdata = { email, auth, id,  username  };
-          const user = { user: docadded.id };
-          const accesTokken = jwt.sign(user, process.env.ACCCES_TOKKEN_SECRET);
+          const accessToken = jwt.sign(id, process.env.ACCESS_TOKEN_SECRET);
+          const user = { email: email, accessToken: accessToken };
+          const reqUser = req.user;
+          if (typeof reqUser === "undefined") {
+            req.userId = id;
+            req.userEmail = email;
+            console.log(req.userId);
+          }
           res.json({
             message: "you successfully log in",
-            user: userdata,
-            accesToken: accesTokken,
+            user: user,
           });
         } else {
           res.json({
-            error: "This is a wrong password",
+            message: "WrongPassWord",
           });
         }
       });
     } else if (!docadded) {
       res.json({
-        error: "This email address was not founded, create account instead",
+        message: "EamilNotFinded",
       });
     }
   });
 });
 
-export default router;
+export default routerSignIn;

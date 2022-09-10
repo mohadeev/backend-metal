@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const connnection = {};
 const conectUrl =
-  "mongodb+srv://uradmine:guYGHY4GWEN53MbT@cluster0.z1np8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  "mongodb+srv://urex:guYGHY4GWEN53MbT@cluster0.iv6bcrf.mongodb.net/?retryWrites=true&w=majority";
 
 const dbConnect = async () => {
-  // console.log("Hello world");ff
+  console.log("db connetced");
   if (connnection.isConnected) {
     return;
   }
