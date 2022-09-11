@@ -1,6 +1,7 @@
 import express from "express";
 import AuthToken from "../../../utils/verify-user/VerifyUser.js";
 import allTours from "./allTours.js";
+import tourData from "./tourData.js";
 
 const tourRoutesGets = express.Router();
 
@@ -9,6 +10,11 @@ const allRoutes = [
     name: allTours,
     auth: false,
   },
+  {
+    name: tourData,
+    auth: false,
+  },
+  
 ];
 
 allRoutes.map(({ name, auth, rout }) => {

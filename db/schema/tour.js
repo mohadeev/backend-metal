@@ -10,8 +10,8 @@ const tourSchema = mongoose.Schema(
     days: [],
     price: String,
     descount: String,
-    depurte: String,
-    end: String,
+    start: { id: String, name: String },
+    end: { id: String, name: String },
     reviews: [],
   },
   { timestamps: true }
