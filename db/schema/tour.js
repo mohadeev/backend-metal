@@ -4,7 +4,7 @@ const tourSchema = mongoose.Schema(
   {
     name: String,
     overview: String,
-    images: String,
+    images: [],
     Services: [],
     places: [],
     days: [],

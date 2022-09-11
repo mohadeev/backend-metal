@@ -20,17 +20,19 @@ conn.once("open", () => {
 });
 
 renderImages.get("/get/read/images/:filename", async (req, res) => {
-  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-    console;
-    if (file) {
-      const readStream = gridfsBucket.openDownloadStream(file._id);
-      readStream.pipe(res);
-    } else {
-      res.status(404).json({
-        err: "Not an image",
-      });
-    }
-  });
+  const filename = req.params.filename;
+  if (filename && filename.length > 10) {
+    gfs.files.findOne({ filename: filename }, (err, file) => {
+      if (file) {
+        const readStream = gridfsBucket.openDownloadStream(file._id);
+        readStream.pipe(res);
+      } else {
+        res.status(404).json({
+          err: "Not an image",
+        });
+      }
+    });
+  }
 });
 
 export default renderImages;
