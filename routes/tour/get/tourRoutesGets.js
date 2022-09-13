@@ -1,5 +1,6 @@
 import express from "express";
 import AuthToken from "../../../utils/verify-user/VerifyUser.js";
+import allExcursions from "./allExcursions.js";
 import allTours from "./allTours.js";
 import tourData from "./tourData.js";
 
@@ -14,6 +15,11 @@ const allRoutes = [
     name: tourData,
     auth: false,
   },
+  {
+    name: allExcursions,
+    auth: false,
+  },
+  
   
 ];
 

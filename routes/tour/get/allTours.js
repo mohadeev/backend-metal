@@ -4,7 +4,13 @@ const allTours = express.Router();
 
 allTours.get("/get/all-tours", async (req, res) => {
   tourModal.find({}).then((allToursData) => {
-    res.json({ responseData: allToursData });
+    const tours = allToursData.filter((item) => item.days.length >= 2);
+    console.log(tours);
+    if (tours) {
+      res.json({ responseData: tours });
+    } else {
+      res.json({ responseData: [] });
+    }
   });
 });
 
