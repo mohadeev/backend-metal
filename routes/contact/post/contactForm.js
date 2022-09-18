@@ -12,9 +12,28 @@ contactForm.post("/", async (req, res) => {
   const msg = {
     to: req.body.email, // Change to your recipient
     from: "urexcursion@gmail.com", // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+    subject: req.body.subject,
+    text:
+      req.body.name +
+      " " +
+      req.body.email +
+      " " +
+      req.body.phone +
+      " " +
+      req.body.subject +
+      " " +
+      req.body.message +
+      " " +
+      req.body.dayOfAriving +
+      " " +
+      req.body.dayOfDuparture +
+      " " +
+      req.body.adults +
+      " " +
+      req.body.childs +
+      " " +
+      req.body.MessageSent,
+    // html: "<strong>and easy to do anywhere, even with Node.js</strong>",
   };
   sgMail
     .send(msg)
