@@ -6,8 +6,6 @@ import { Server, Socket } from "socket.io";
 import dbConnect from "./db/dbConnect.js";
 import Message from "./db/schema/Message.js";
 import User from "./db/schema/user.js";
-//import Singin from "./routes/auth/singin/singin.js";
-//import SingUp from "./routes/auth/singup/singup.js";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import SocketMessage from "./routes/socket/index.js";
@@ -15,6 +13,9 @@ import createmessages from "./routes/messages/createmessage.js";
 import conversations from "./routes/conversations/conversations.js";
 import senduser from "./routes/senduser.js";
 import Routes from "./routes/routes.js";
+import mongoose from "mongoose";
+import axios from "axios";
+import countryModal from "./db/schema/country.js";
 
 //config the appp
 const app = express();
@@ -55,6 +56,25 @@ app.use(function (req, res, next) {
 });
 
 app.use("/", Routes);
+app.get("/countries", (req, res) => {
+  const allmyData = [];
+  countryModal.find({}).then(async (contry) => {
+    await Promise.all(
+      contry.map(async (vid, index) => {
+        if (
+          vid.json.name.common === "United States" ||
+          vid.json.name.common === "Spain" ||
+          vid.json.name.common === "Germany" ||
+          vid.json.name.common === "France"
+        ) {
+          await allmyData.push(vid);
+          //console.log(vid.json.name);
+        }
+      })
+    );
+    res.json({ responseData: allmyData });
+  });
+});
 
 server.listen(PORT, (err) => {
   if (err) console.log(err);
