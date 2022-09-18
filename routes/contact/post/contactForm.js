@@ -4,14 +4,14 @@ import sgMail from "@sendgrid/mail";
 
 contactForm.post("/", async (req, res) => {
   console.log(req.body);
-  console.log("SD");
+
   const SENDGRID_API_KEY =
-    "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";
+    "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";
 
   sgMail.setApiKey(SENDGRID_API_KEY);
   const msg = {
-    to: "urexcursion@gmail.com", // Change to your recipient
-    from: "urexcursion@example.com", // Change to your verified sender
+    to: req.body.email, // Change to your recipient
+    from: "urexcursion@gmail.com", // Change to your verified sender
     subject: "Sending with SendGrid is Fun",
     text: "and easy to do anywhere, even with Node.js",
     html: "<strong>and easy to do anywhere, even with Node.js</strong>",
@@ -20,7 +20,7 @@ contactForm.post("/", async (req, res) => {
     .send(msg)
     .then(() => {
       console.log("Email sent");
-      res.json({ data: "data" });
+      res.json("Email sent");
     })
     .catch((error) => {
       console.error(error);
