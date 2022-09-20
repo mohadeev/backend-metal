@@ -10,7 +10,7 @@ contactForm.post("/", async (req, res) => {
 
   sgMail.setApiKey(SENDGRID_API_KEY);
   const msg = {
-    to: req.body.email, // Change to your recipient
+    to: "urexcursion@gmail.com", // Change to your recipient
     from: "urexcursion@gmail.com", // Change to your verified sender
     subject: req.body.subject,
     text:
