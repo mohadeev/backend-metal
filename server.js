@@ -68,7 +68,6 @@ app.get("/countries", (req, res) => {
           vid.json.name.common === "France"
         ) {
           await allmyData.push(vid);
-          //console.log(vid.json.name);
         }
       })
     );
