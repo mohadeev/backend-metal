@@ -21,10 +21,10 @@ import countryModal from "./db/schema/country.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const ORIGIN = process.env.ORIGIN;
-
+console.log(ORIGIN);
 dotenv.config();
 cors(
-  { "Access-Control-Allow-Origin": `*` },
+  { "Access-Control-Allow-Origin": ORIGIN },
   "Access-Control-Allow-Methods: POST, PUT, PATCH, GET, DELETE, OPTIONS",
   "Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization"
 );

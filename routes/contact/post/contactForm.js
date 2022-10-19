@@ -1,8 +1,11 @@
 import express from "express";
 const contactForm = express.Router();
 import sgMail from "@sendgrid/mail";
+import sendMessage from "../../auth/signup/utils/sendMessage.js";
 
 contactForm.post("/", async (req, res) => {
+  //await sendMessage();-
+  
   console.log(req.body);
 
   const SENDGRID_API_KEY =

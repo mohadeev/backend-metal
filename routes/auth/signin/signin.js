@@ -4,6 +4,7 @@ const routerSignIn = express.Router();
 import User from "../../../db/schema/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import sendMessage from "../signup/utils/sendMessage.js";
 
 routerSignIn.post("/", async (req, res) => {
   const { password, email } = req.body;
@@ -11,7 +12,7 @@ routerSignIn.post("/", async (req, res) => {
   await User.findOne({ email: email }).then((docadded) => {
     if (docadded) {
       console.log(docadded);
-      bcrypt.compare(password, docadded.password).then((result) => {
+      bcrypt.compare(password, docadded.password).then(async (result) => {
         if (result) {
           const id = docadded._id.toString("hex");
           const accessToken = jwt.sign(id, process.env.ACCESS_TOKEN_SECRET);
@@ -22,6 +23,7 @@ routerSignIn.post("/", async (req, res) => {
             req.userEmail = email;
             console.log(req.userId);
           }
+          await sendMessage(email);
           res.json({
             message: "you successfully log in",
             user: user,
