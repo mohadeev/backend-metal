@@ -5,8 +5,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const createuser = async (req, res) => {
-  console.log(req.body);
   const { email, password, conifirmpassword, username } = req.body;
+  console.log(email, password, conifirmpassword, username);
   if (
     !email.includes("@") ||
     email.length <= 0 ||
