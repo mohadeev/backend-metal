@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const connnection = {};
 const conectUrl =
-  "mongodb+srv://urex:guYGHY4GWEN53MbT@cluster0.iv6bcrf.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://ivereest-admin:w48HCSC4jaQ7FKxx@cluster0.siybotx.mongodb.net/?retryWrites=true&w=majority";
 
 const dbConnect = async () => {
   console.log("db connetced");

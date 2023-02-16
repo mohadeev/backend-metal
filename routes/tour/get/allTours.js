@@ -1,13 +1,13 @@
 import express from "express";
-import tourModal from "../../../db/schema/tour.js";
+import tourModal from "../../../db/schema/product.js";
 const allTours = express.Router();
 
 allTours.get("/get/all-tours", async (req, res) => {
   tourModal.find({}).then((allToursData) => {
-    const tours = allToursData.filter((item) => item.days.length >= 2);
-    console.log(tours);
-    if (tours) {
-      res.json({ responseData: tours });
+
+    console.log(allToursData);
+    if (allToursData) {
+      res.json({ responseData: allToursData });
     } else {
       res.json({ responseData: [] });
     }
