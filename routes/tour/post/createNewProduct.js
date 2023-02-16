@@ -32,8 +32,12 @@ createNewTour.post("/", async (req, res) => {
     } else if (typeof currency === "undefined" || currency.length <= 2) {
     } else {
       console.log("product will creat from here");
-      
-      res.json({});
+      productModal
+        .create({ creator: userId, productData: data })
+        .then((tour) => {
+          console.log(tour);
+          res.json({ sdf: "SD" });
+        });
     }
   } else {
     resErroFunc("PRODUCT-DATA-ERROR");
