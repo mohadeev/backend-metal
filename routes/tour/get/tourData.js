@@ -1,5 +1,5 @@
 import express from "express";
-import tourModal from "../../../db/schema/product.js";
+import tourModal from "../../../db/schema/productModal.js";
 const tourData = express.Router();
 
 tourData.get("/get/tour-data/:tourId", async (req, res) => {

@@ -1,6 +1,7 @@
 import express from "express";
 import AuthToken from "../../../utils/verify-user/VerifyUser.js";
 import createNewTour from "./createNewProduct.js";
+import initProduct from "./initProduct.js";
 const tourPosts = express.Router();
 
 const allRoutes = [
@@ -8,6 +9,11 @@ const allRoutes = [
     name: createNewTour,
     auth: true,
     rout: "/create-new-product/",
+  },
+  {
+    name: initProduct,
+    auth: true,
+    rout: "/init-new-product/",
   },
 ];
 

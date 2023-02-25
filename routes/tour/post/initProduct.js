@@ -1,10 +1,10 @@
 import express from "express";
-import productModal from "../../../db/schema/product";
-import User from "../../../db/schema/user";
+import productModal from "../../../db/schema/productModal.js";
+import User from "../../../db/schema/user.js";
 
-const initChannel = express.Router();
+const initProduct = express.Router();
 
-initChannel.post("/", async (req, res) => {
+initProduct.post("/", async (req, res) => {
   console.log("creating channel");
   const userId = req.userId;
   await User.findOne({ _id: userId }).then(async (docadded) => {
@@ -13,8 +13,9 @@ initChannel.post("/", async (req, res) => {
         .create({
           creator: userId,
         })
-        .then((channel) => {
-          res.json({ responsData: channel });
+        .then((product) => {
+          console.log(product);
+          res.json({ responsData: product });
         });
     } else {
       res.end();
@@ -22,4 +23,4 @@ initChannel.post("/", async (req, res) => {
   });
 });
 
-export default initChannel;
+export default initProduct;

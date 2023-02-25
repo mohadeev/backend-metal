@@ -11,7 +11,7 @@ routesAuth.use("/auth/sign-up", routerSignUp);
 routesAuth.get("/get/user-data/:token", AuthToken, (req, res) => {
   const useId = req.userId;
   User.findOne({ _id: useId }).then((userData) => {
-    console.log(userData);
+    //console.log(userData);
     if (userData) {
       res.json({ responseData: userData });
     }

@@ -4,6 +4,8 @@ import routesAuth from "./auth/auth.js";
 import contactRoutes from "./contact/contactRoutes.js";
 import destinationRouter from "./destination/destinationRouter.js";
 import imagesRoutes from "./images/imagesRoutes.js";
+import productGets from "./product/get/productGets.js";
+import productRouter from "./product/productRouter.js";
 import tourRouter from "./tour/tourRouter.js";
 
 Routes.use("/api", routesAuth);
@@ -12,6 +14,7 @@ Routes.use("/api", tourRouter);
 Routes.use("/api", destinationRouter);
 Routes.use("/api", imagesRoutes);
 Routes.use("/api", contactRoutes);
+Routes.use("/api", productRouter);
 
 // Routes.post("/api/add-tag", async (req, res) => {
 //   const tagValue = req.body.tag;
