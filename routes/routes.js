@@ -2,6 +2,7 @@ import express from "express";
 const Routes = express.Router();
 import routesAuth from "./auth/auth.js";
 import contactRoutes from "./contact/contactRoutes.js";
+import departmentsRoutes from "./departments/departmentsRoutes.js";
 import destinationRouter from "./destination/destinationRouter.js";
 import imagesRoutes from "./images/imagesRoutes.js";
 import productGets from "./product/get/productGets.js";
@@ -15,6 +16,7 @@ Routes.use("/api", destinationRouter);
 Routes.use("/api", imagesRoutes);
 Routes.use("/api", contactRoutes);
 Routes.use("/api", productRouter);
+Routes.use("/api", departmentsRoutes);
 
 // Routes.post("/api/add-tag", async (req, res) => {
 //   const tagValue = req.body.tag;
