@@ -2,6 +2,7 @@ import express from "express";
 import AuthToken from "../../../utils/verify-user/VerifyUser.js";
 import createNewTour from "./createNewProduct.js";
 import initProduct from "./initProduct.js";
+import uploadProductImages from "./uploadProductImages.js";
 const tourPosts = express.Router();
 
 const allRoutes = [
@@ -15,6 +16,12 @@ const allRoutes = [
     auth: true,
     rout: "/init-new-product/",
   },
+  {
+    name: uploadProductImages,
+    auth: true,
+    rout: "/upload-product-images/",
+  },
+  ,
 ];
 
 allRoutes.map(({ name, auth, rout }) => {
