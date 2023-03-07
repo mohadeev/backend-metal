@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-import cloudinary from "cloudinary";
+import cloudinaryMain from "cloudinary";
 
 dotenv.config();
 
-const cloudinaryMain = cloudinary.config({
+cloudinaryMain.config({
   cloud_name: "mohadeev",
   api_key: "823672526525528",
   api_secret: "FpKV7PxTxEMmBdq0Ig-P_gjw__s",
