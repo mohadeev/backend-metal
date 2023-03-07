@@ -8,13 +8,14 @@ const createNewTour = express.Router();
 createNewTour.post("/", async (req, res) => {
   const userId = req.userId;
   const prId = req.body.prId;
-  console.log(req.body);
+  // console.log(req.body);
   if (mongoose.Types.ObjectId.isValid(prId)) {
     productModal
       .findOne({ _id: prId, creator: userId })
       .then(async (prFinded) => {
         if (prFinded) {
           const data = req.body?.productData;
+          console.log("data", data);
           const title = data.title;
           const descreption = data?.descreption;
           const priceData = data?.priceData;
@@ -52,7 +53,11 @@ createNewTour.post("/", async (req, res) => {
               try {
                 let update = prFinded;
                 update.productData = data;
-                const filter = { creator: userId, _id: prId };
+                console.log(update);
+                const filter = {
+                  creator: userId,
+                  _id: mongoose.Types.ObjectId(prId),
+                };
                 await productModal.updateOne(filter, update);
                 console.log("updated");
               } catch (error) {

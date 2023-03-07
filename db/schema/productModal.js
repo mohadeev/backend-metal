@@ -11,6 +11,7 @@ const productSchema = mongoose.Schema(
       catigory: {},
       subcatigory: {},
       other: {},
+      configurator: {},
     },
     creator: String,
   },
