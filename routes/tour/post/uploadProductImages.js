@@ -24,15 +24,16 @@ uploadProductImages.post(
   upload.single("image"),
   async (req, res) => {
     const File = req.file;
-    const prId = req.body.prId;
+    const prId = req.body.productId;
 
     const { path, originalname } = req.file;
     try {
       const result = await cloudinary.v2.uploader.upload(path);
-      console.log("result", result);
+      console.log("prId", prId);
       const public_id = result.public_id;
       const url = result.url;
       const imageData = { public_id, url };
+      console.log(imageData);
       res.json({ File });
     } catch (err) {
       console.log(err);
