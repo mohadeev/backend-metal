@@ -1,26 +1,42 @@
 import express from "express";
-import multer from "multer";
-
 const uploadProductImages = express.Router();
+import fs from "fs";
+import mongoose from "mongoose";
+import multer from "multer";
+import path from "path";
+import cloudinary from "../../../utils/cloudinary/cloudinary.js";
 
+const __dirname = path.resolve();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Set the destination folder for uploaded files
+    cb(null, path.resolve(__dirname, "./uploads"));
   },
+
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
-
-// Define the route to handle image uploads
+const upload = multer({ storage });
 uploadProductImages.post(
-  "/upload",
+  "/post/product/upload-product-images/",
+
   upload.single("image"),
-  function (req, res) {
-    console.log(req.file);
-    res.send("Image uploaded successfully");
+  async (req, res) => {
+    const File = req.file;
+    const prId = req.body.prId;
+
+    const { path, originalname } = req.file;
+    try {
+      const result = await cloudinary.v2.uploader.upload(path);
+      console.log("result", result);
+      const public_id = result.public_id;
+      const url = result.url;
+      const imageData = { public_id, url };
+      res.json({ File });
+    } catch (err) {
+      console.log(err);
+    }
   }
 );
 

@@ -18,8 +18,8 @@ const allRoutes = [
   },
   {
     name: uploadProductImages,
-    auth: true,
-    rout: "/upload-product-images/",
+    auth: false,
+    rout: "",
   },
   ,
 ];
@@ -28,7 +28,11 @@ allRoutes.map(({ name, auth, rout }) => {
   if (auth) {
     tourPosts.use(`/post/product${rout}:token`, AuthToken, name);
   } else {
-    tourPosts.use(`/post/product${rout}`, name);
+    if (rout.length >= 1) {
+      tourPosts.use(`/post/product${rout}`, name);
+    } else {
+      tourPosts.use(`/`, name);
+    }
   }
 });
 
