@@ -4,7 +4,7 @@ import fs from "fs";
 import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
-import cloudinary from "../../../utils/cloudinary/cloudinary.js";
+import cloudinary from "../../../utils/cloudinary/cloudinaryMain.js";
 
 const __dirname = path.resolve();
 const storage = multer.diskStorage({
